@@ -32,7 +32,7 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#121F6C"
         android:gravity="center"
@@ -122,16 +122,16 @@
             android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="15dp"
             android:text="City"
             android:textColor="#F8F4F4"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/country" />
+            app:layout_constraintStart_toEndOf="@+id/country"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/imageButton"
             android:layout_width="112dp"
             android:layout_height="107dp"
@@ -150,12 +150,25 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:text="temperature"
+            android:text="°C"
             android:textColor="#F1EEEE"
             android:textSize="65sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="16dp"
+            android:text="Date/Time"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/country" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -174,19 +187,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/Longitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="91dp"
-            android:layout_marginLeft="91dp"
-            android:layout_marginTop="5dp"
-            android:text=":Longitude"
-            android:textColor="#FDFBFB"
-            android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/textView8"
-            app:layout_constraintTop_toBottomOf="@+id/Latitude" />
 
         <TextView
             android:id="@+id/textView10"
@@ -242,7 +242,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -255,7 +255,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -265,10 +265,10 @@
             android:textColor="#FBF9F9"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textView13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -278,7 +278,7 @@
             android:textColor="#FBFAFA"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
             android:id="@+id/Latitude"
@@ -294,30 +294,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/WindSpeed"
+            android:id="@+id/Longitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="75dp"
-            android:layout_marginLeft="75dp"
+            android:layout_marginStart="92dp"
+            android:layout_marginLeft="92dp"
             android:layout_marginTop="5dp"
-            android:text=":Wind Speed"
-            android:textColor="#FAF9F9"
+            android:text=":Longitude"
+            android:textColor="#FDFBFB"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/textView16"
-            app:layout_constraintTop_toBottomOf="@+id/Pressure" />
-
-        <TextView
-            android:id="@+id/Pressure"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="103dp"
-            android:layout_marginLeft="103dp"
-            android:layout_marginTop="5dp"
-            android:text=":Pressure"
-            android:textColor="#FBF7F7"
-            android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/textView14"
-            app:layout_constraintTop_toBottomOf="@+id/sunset" />
+            app:layout_constraintStart_toEndOf="@+id/textView8"
+            app:layout_constraintTop_toBottomOf="@+id/Latitude" />
 
         <TextView
             android:id="@+id/Humidity"
@@ -346,17 +333,44 @@
             app:layout_constraintTop_toBottomOf="@+id/Humidity" />
 
         <TextView
-            android:id="@+id/sunset"
+            android:id="@+id/Sunset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="120dp"
             android:layout_marginLeft="120dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="5dp"
             android:text=":Sunset"
             android:textColor="#FAF5F5"
             android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/Sunrise" />
+
+        <TextView
+            android:id="@+id/pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="103dp"
+            android:layout_marginLeft="103dp"
+            android:layout_marginTop="5dp"
+            android:text=":Pressure"
+            android:textColor="#FAF5F5"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/Sunset" />
+
+        <TextView
+            android:id="@+id/WindSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="75dp"
+            android:layout_marginLeft="75dp"
+            android:layout_marginTop="5dp"
+            android:text=":Wind Speed"
+            android:textColor="#FAF9F9"
+            android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/Humidity" />
+            app:layout_constraintTop_toBottomOf="@+id/pressure" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
