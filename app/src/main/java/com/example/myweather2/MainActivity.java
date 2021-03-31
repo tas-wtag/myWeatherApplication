@@ -1,9 +1,17 @@
 package com.example.myweather2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,15 +38,25 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
+
+    //location
+    protected LocationManager locationManager;
+    protected LocationListener locationListener;
+    protected Context context;
+    protected String latitude, longitude;
+    protected boolean gps_enabled, network_enabled;
 
     EditText editText1,editText2;
+    double lati;
+    double longi;
+    TextView TextView3;
     Button button;
     ImageView imageView;
     TextView country,city,temp,time;
-    TextView latitude;
-    TextView longitude;
+    TextView latitude1;
+    TextView longitude1;
     TextView pressure;
     TextView humidity;
     TextView sunrise;
@@ -51,16 +69,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText1=findViewById(R.id.editTextTextPersonName);
-        editText2=findViewById(R.id.editTextTextPersonName2);
+        //editText1=findViewById(R.id.editTextTextPersonName);
+        //editText2=findViewById(R.id.editTextTextPersonName2);
         button = findViewById(R.id.button);
         country=findViewById(R.id.country);
         city=findViewById(R.id.city);
         temp=findViewById(R.id.temp);
         time=findViewById(R.id.textView2);
 
-        latitude=findViewById(R.id.Latitude);
-        longitude=findViewById(R.id.Longitude);
+        latitude1=findViewById(R.id.Latitude);
+        longitude1=findViewById(R.id.Longitude);
         humidity=findViewById(R.id.Humidity);
         sunrise=findViewById(R.id.Sunrise);
         sunset=findViewById(R.id.Sunset);
@@ -72,18 +90,31 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 findweather();
             }
         });
-
     }
 
-
-
     public void findweather(){
+
+        //location
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
         //String city1=editText.getText().toString();
-        String lat=editText1.getText().toString();
-        String lon=editText2.getText().toString();
+        String lat=String.valueOf(lati);
+        String lon=String.valueOf(longi);
         String url="http://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf";
 
 
@@ -128,12 +159,12 @@ public class MainActivity extends AppCompatActivity {
                     //find latitude
                     JSONObject object4=jsonObject.getJSONObject("coord");
                     double lat_find=object4.getDouble("lat");
-                    latitude.setText(lat_find+"°  N ");
+                    latitude1.setText(lat_find+"°  N ");
 
                     //find longitude
                     JSONObject object5=jsonObject.getJSONObject("coord");
                     double lon_find=object5.getDouble("lon");
-                    longitude.setText(lon_find+"°  E ");
+                    longitude1.setText(lon_find+"°  E ");
 
                     //find humidity
                     JSONObject object6=jsonObject.getJSONObject("main");
@@ -183,5 +214,34 @@ public class MainActivity extends AppCompatActivity {
         });
         RequestQueue requestQueue= Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(stringRequest);
+    }
+    public void sendMessage(View view) {
+        // Do something in response to button
+    }
+
+    //location
+    @Override
+    public void onLocationChanged(Location location) {
+
+       lati=location.getLatitude();
+       longi=location.getLongitude();
+       // TextView3 = (TextView) findViewById(R.id.textView3);
+        //TextView3.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","disable");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","status");
     }
 }
