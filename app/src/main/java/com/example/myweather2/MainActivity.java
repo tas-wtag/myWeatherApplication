@@ -1,11 +1,13 @@
 package com.example.myweather2;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -38,6 +40,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
 
@@ -47,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected Context context;
     protected String latitude, longitude;
     protected boolean gps_enabled, network_enabled;
+    public static final int REQUEST_CODE_PERMISSIONS = 101;
 
     EditText editText1,editText2;
     double lati;
     double longi;
     TextView TextView3;
     Button button;
+    Button next;
     ImageView imageView;
     TextView country,city,temp,time;
     TextView latitude1;
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //editText1=findViewById(R.id.editTextTextPersonName);
         //editText2=findViewById(R.id.editTextTextPersonName2);
         button = findViewById(R.id.button);
+        next = (Button) findViewById(R.id.next);
         country=findViewById(R.id.country);
         city=findViewById(R.id.city);
         temp=findViewById(R.id.temp);
@@ -86,11 +92,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         wind_speed=findViewById(R.id.WindSpeed);
 
 
-
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                startActivity(intent);
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 findweather();
             }
         });
@@ -108,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -196,11 +208,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     JSONObject object10=jsonObject.getJSONObject("wind");
                     String windSpeed_find=object10.getString("speed");
                     wind_speed.setText(windSpeed_find+"  km/h");
-
-
-
-
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
