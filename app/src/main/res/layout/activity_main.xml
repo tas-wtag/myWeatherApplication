@@ -154,6 +154,69 @@
             app:layout_constraintTop_toBottomOf="@+id/imageButton"
             app:rippleColor="#FFFFFF" />
 
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="149dp"
+            android:layout_marginRight="149dp"
+            android:text="Sleep time in Seconds:"
+            android:textColor="#FAF8F8"
+            android:textSize="10pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temp" />
+
+        <EditText
+            android:id="@+id/in_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_time"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="97dp"
+            android:layout_marginRight="97dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/tv_time"
+            android:background="@android:drawable/editbox_background"
+            android:inputType="number"
+            android:scrollbarSize="20dp"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_time"
+            app:layout_constraintTop_toBottomOf="@+id/next" />
+
+        <Button
+            android:id="@+id/btn_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/in_time"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="110dp"
+            android:layout_marginRight="110dp"
+            android:layout_marginBottom="82dp"
+            android:text="Run Async task"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/temp"
+            app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="7pt"
+            android:layout_below="@+id/btn_run"
+            android:layout_centerHorizontal="true" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

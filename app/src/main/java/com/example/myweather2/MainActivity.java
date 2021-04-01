@@ -3,19 +3,20 @@ package com.example.myweather2;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,10 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     ListView simpleList;
+
+    private Button abutton;
+    private EditText atime;
+    private TextView finalResult;
 
     //location
     protected LocationManager locationManager;
@@ -90,6 +95,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         sunset=findViewById(R.id.Sunset);
         pressure=findViewById(R.id.pressure);
         wind_speed=findViewById(R.id.WindSpeed);
+
+        atime = (EditText) findViewById(R.id.in_time);
+        abutton = (Button) findViewById(R.id.btn_run);
+        finalResult = (TextView) findViewById(R.id.tv_result);
+        abutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTaskRunner runner = new AsyncTaskRunner();
+                String sleepTime = atime.getText().toString();
+                runner.execute(sleepTime);
+            }
+        });
 
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -250,6 +267,53 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.d("Latitude","status");
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<String, String, String> {
+
+        private String resp;
+        ProgressDialog progressDialog;
+
+        @Override
+        protected String doInBackground(String... params) {
+            publishProgress("Sleeping..."); // Calls onProgressUpdate()
+            try {
+                int time = Integer.parseInt(params[0])*1000;
+
+                Thread.sleep(time);
+                resp = "Slept for " + params[0] + " seconds";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                resp = e.getMessage();
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp = e.getMessage();
+            }
+            return resp;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            // execution of result of Long time consuming operation
+            progressDialog.dismiss();
+            finalResult.setText(result);
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(MainActivity.this,
+                    "ProgressDialog",
+                    "Wait for "+atime.getText().toString()+ " seconds");
+        }
+
+
+        @Override
+        protected void onProgressUpdate(String... text) {
+            finalResult.setText(text[0]);
+
+        }
     }
 }
 //hellooooo
