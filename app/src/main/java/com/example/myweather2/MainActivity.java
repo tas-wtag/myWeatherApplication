@@ -1,9 +1,6 @@
 package com.example.myweather2;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,8 +15,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,16 +35,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
+    ListView simpleList;
 
     //location
     protected LocationManager locationManager;
@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 findweather();
             }
         });
+        //simpleList = (ListView) findViewById(R.id.simpleListView);
+        //SecondActivity customAdapter = new SecondActivity(getApplicationContext(), countryList, flags);
+        //simpleList.setAdapter((ListAdapter) customAdapter);
     }
 
     public void findweather(){
@@ -130,90 +133,85 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String url="http://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf";
 
 
-        StringRequest stringRequest=new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onResponse(String response) {
-            //calling api
+       StringRequest stringRequest=new StringRequest(Request.Method.GET, url, (Response.Listener<String>) response -> {
+       //calling api
 
 
-                try {
-                    JSONObject jsonObject =new JSONObject(response);
+           try {
+               JSONObject jsonObject =new JSONObject(response);
+               //find country
+               JSONObject object1=jsonObject.getJSONObject("sys");
+               String country_find=object1.getString("country");
+               country.setText(country_find);
 
-                    //find country
-                    JSONObject object1=jsonObject.getJSONObject("sys");
-                    String country_find=object1.getString("country");
-                    country.setText(country_find);
+               //find city
+               String city_find=jsonObject.getString("name");
+               city.setText(city_find);
 
-                    //find city
-                    String city_find=jsonObject.getString("name");
-                    city.setText(city_find);
+               //find temp
+               JSONObject object2=jsonObject.getJSONObject("main");
+               String temp_find=object2.getString("temp");
+               temp.setText(temp_find+" °C ");
 
-                    //find temp
-                    JSONObject object2=jsonObject.getJSONObject("main");
-                    String temp_find=object2.getString("temp");
-                    temp.setText(temp_find+" °C ");
+               //find image icon
+               JSONArray jsonArray=jsonObject.getJSONArray("weather");
+               JSONObject object3=jsonArray.getJSONObject(0);
+               String img=object3.getString("icon");
+               imageView=(ImageView) findViewById(R.id.imageButton);
+               Picasso.get().load(IMG_URL+img+".png").into(imageView);
 
-                    //find image icon
-                    JSONArray jsonArray=jsonObject.getJSONArray("weather");
-                    JSONObject object3=jsonArray.getJSONObject(0);
-                    String img=object3.getString("icon");
-                    imageView=(ImageView) findViewById(R.id.imageButton);
-                    Picasso.get().load(IMG_URL+img+".png").into(imageView);
+               //find date
+               Calendar calender=Calendar.getInstance();
+               @SuppressLint("SimpleDateFormat") SimpleDateFormat std=new SimpleDateFormat("dd/MM/yyyy \nHH:mm:ssa");
+               //std.setTimeZone(TimeZone.getTimeZone("UTC"));
+               String date=std.format(calender.getTime());
+               time.setText(date);
 
-                    //find date
-                    Calendar calender=Calendar.getInstance();
-                    SimpleDateFormat std=new SimpleDateFormat("dd/MM/yyyy \nHH:mm:ssa");
-                    //std.setTimeZone(TimeZone.getTimeZone("UTC"));
-                    String date=std.format(calender.getTime());
-                    time.setText(date);
+               //find latitude
+               JSONObject object4=jsonObject.getJSONObject("coord");
+               double lat_find=object4.getDouble("lat");
+               latitude1.setText(lat_find+"°  N ");
 
-                    //find latitude
-                    JSONObject object4=jsonObject.getJSONObject("coord");
-                    double lat_find=object4.getDouble("lat");
-                    latitude1.setText(lat_find+"°  N ");
+               //find longitude
+               JSONObject object5=jsonObject.getJSONObject("coord");
+               double lon_find=object5.getDouble("lon");
+               longitude1.setText(lon_find+"°  E ");
 
-                    //find longitude
-                    JSONObject object5=jsonObject.getJSONObject("coord");
-                    double lon_find=object5.getDouble("lon");
-                    longitude1.setText(lon_find+"°  E ");
+               //find humidity
+               JSONObject object6=jsonObject.getJSONObject("main");
+               int hum_find=object6.getInt("humidity");
+               humidity.setText(hum_find+" %");
 
-                    //find humidity
-                    JSONObject object6=jsonObject.getJSONObject("main");
-                    int hum_find=object6.getInt("humidity");
-                    humidity.setText(hum_find+" %");
+               //find sunrise
+               JSONObject object7=jsonObject.getJSONObject("sys");
+               String sunrise_find=object7.getString("sunrise");
+               long dv = Long.parseLong(sunrise_find)*1000;// it needs to be in milisecond
+               Date df = new Date(dv);
+               @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat("hh:mma").format(df);
+               sunrise.setText(vv);
 
-                    //find sunrise
-                    JSONObject object7=jsonObject.getJSONObject("sys");
-                    String sunrise_find=object7.getString("sunrise");
-                    long dv = Long.parseLong(sunrise_find)*1000;// it needs to be in milisecond
-                    Date df = new java.util.Date(dv);
-                    @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat("hh:mma").format(df);
-                    sunrise.setText(vv);
+               //find sunset
+               JSONObject object8=jsonObject.getJSONObject("sys");
+               String sunset_find=object8.getString("sunset");
+               long dv2 = Long.parseLong(sunset_find)*1000;// it needs to be in milisecond
+               Date df2 = new Date(dv2);
+               @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat("hh:mma").format(df2);
+               sunset.setText(vv2);
 
-                    //find sunset
-                    JSONObject object8=jsonObject.getJSONObject("sys");
-                    String sunset_find=object8.getString("sunset");
-                    long dv2 = Long.parseLong(sunset_find)*1000;// it needs to be in milisecond
-                    Date df2 = new java.util.Date(dv2);
-                    @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat("hh:mma").format(df2);
-                    sunset.setText(vv2);
+               //find pressure
+               JSONObject object9=jsonObject.getJSONObject("main");
+               String pressure_find=object9.getString("pressure");
+               pressure.setText(pressure_find+"  hPa");
 
-                    //find pressure
-                    JSONObject object9=jsonObject.getJSONObject("main");
-                    String pressure_find=object9.getString("pressure");
-                    pressure.setText(pressure_find+"  hPa");
+               //find windSpeed
+               JSONObject object10=jsonObject.getJSONObject("wind");
+               String windSpeed_find=object10.getString("speed");
+               wind_speed.setText(windSpeed_find+"  km/h");
 
-                    //find windSpeed
-                    JSONObject object10=jsonObject.getJSONObject("wind");
-                    String windSpeed_find=object10.getString("speed");
-                    wind_speed.setText(windSpeed_find+"  km/h");
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        },new Response.ErrorListener(){
+           } catch (JSONException e) {
+               e.printStackTrace();
+           }
+       },new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this,error.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
@@ -221,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
         RequestQueue requestQueue= Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(stringRequest);
+        //new MyHttpRequestClass().execute();
+
     }
     public void sendMessage(View view) {
         // Do something in response to button
@@ -252,3 +252,4 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Log.d("Latitude","status");
     }
 }
+//hellooooo
