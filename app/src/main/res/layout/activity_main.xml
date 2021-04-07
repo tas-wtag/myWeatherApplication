@@ -158,7 +158,9 @@
             android:layout_height="wrap_content"
             android:textSize="7pt"
             android:layout_below="@+id/btn_run"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            tools:ignore="ExtraText,UnknownId" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
