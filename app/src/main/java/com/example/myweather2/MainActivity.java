@@ -2,6 +2,7 @@ package com.example.myweather2;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     ListView simpleList;
 
     private TextView finalResult;
+    ProgressDialog progressDialog;
 
     //location
     protected LocationManager locationManager ;
@@ -62,9 +64,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     double lat_find;
     double lon_find;
     String date;
-   int hum_find;
-   String sunset_find;
-   String sunrise_find;
+    int hum_find;
+    String sunset_find;
+    String sunrise_find;
     String windSpeed_find;
     String pressure_find;
     EditText editText1, editText2;
@@ -207,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         lati=location.getLatitude();
         longi=location.getLongitude();
-        String lat = String.valueOf (lati);
-        String lon = String.valueOf (longi);
 
         //lattt.setText(lat);
        // lonnn.setText (lon);
@@ -263,125 +263,142 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         locationManager.removeUpdates(this);
-
     }
+   private class fetchData extends AsyncTask<String, String, String> {
+
+       @Override
+       protected void onPreExecute() {
+           super.onPreExecute();
+           // display a progress dialog for good user experiance
+           progressDialog = new ProgressDialog (MainActivity.this);
+           progressDialog.setMessage("Please Wait");
+           progressDialog.setCancelable(false);
+           progressDialog.show();
+       }
+       String inputLine;
+       String dataParsed = "";
+       String singleParsed = "";
 
 
-   private class fetchData extends AsyncTask<String, String, Void> {
-        String inputLine;
+       @Override
+       protected String doInBackground(String... params) {
+           try {
+               String lat = String.valueOf (lati);
+               String lon = String.valueOf (longi);
 
 
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-
-                URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?units=metric&lat=23&lon=90&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
-                httpURLConnection.setRequestMethod ("GET");
-                InputStream inputStream = httpURLConnection.getInputStream ();
-                BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-                StringBuffer response = new StringBuffer ();
-                while ((inputLine = bufferedReader.readLine ()) != null) {
-                    response.append (inputLine);
-                }
+               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + lat + "&lon=" + lon + "&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
+               httpURLConnection.setRequestMethod ("GET");
+               InputStream inputStream = httpURLConnection.getInputStream ();
+               BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
+               StringBuffer response = new StringBuffer ();
+               while ((inputLine = bufferedReader.readLine ()) != null) {
+                   response.append (inputLine);
+               }
 
 
-                //find country
-                JSONObject jsonObject = new JSONObject (inputLine);
-                JSONObject object1 = jsonObject.getJSONObject ("sys");
-                country_find = object1.getString ("country");
+           } catch (IOException ioException) {
+               ioException.printStackTrace ();
+           }
+           return inputLine;
+       }
 
-                //find city
-                city_find = jsonObject.getString ("name");
+       //@SuppressLint("SetTextI18n")
+       @Override
+       protected void onPostExecute(String aVoid) {
+           Log.d("data", aVoid.toString());
+           progressDialog.dismiss();
 
+           try {
+               //find country
+               JSONObject jsonObject = new JSONObject (aVoid);
+               JSONObject object1 = jsonObject.getJSONObject ("sys");
+               country_find = object1.getString ("country");
+               country.setText (country_find);
 
-                //find temp
-                JSONObject object2 = jsonObject.getJSONObject ("main");
-                temp_find = object2.getString ("temp");
-
-
-                //find image icon
-                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-                JSONObject object3 = jsonArray.getJSONObject (0);
-                img = object3.getString ("icon");
-
-
-                //find date
-                Calendar calender = Calendar.getInstance ();
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy \nHH:mm:ssa");
-                //std.setTimeZone(TimeZone.getTimeZone("UTC"));
-                date = std.format (calender.getTime ());
+               //find city
+               city_find = jsonObject.getString ("name");
 
 
-                //find latitude
-                JSONObject object4 = jsonObject.getJSONObject ("coord");
-                lat_find = object4.getDouble ("lat");
+               //find temp
+               JSONObject object2 = jsonObject.getJSONObject ("main");
+               temp_find = object2.getString ("temp");
 
 
-                //find longitude
-                JSONObject object5 = jsonObject.getJSONObject ("coord");
-                lon_find = object5.getDouble ("lon");
+               //find image icon
+               JSONArray jsonArray = jsonObject.getJSONArray ("weather");
+               JSONObject object3 = jsonArray.getJSONObject (0);
+               img = object3.getString ("icon");
 
 
-                //find humidity
-                JSONObject object6 = jsonObject.getJSONObject ("main");
-                hum_find = object6.getInt ("humidity");
+               //find date
+               Calendar calender = Calendar.getInstance ();
+               @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy \nHH:mm:ssa");
+               //std.setTimeZone(TimeZone.getTimeZone("UTC"));
+               date = std.format (calender.getTime ());
 
 
-                //find sunrise
-                JSONObject object7 = jsonObject.getJSONObject ("sys");
-                sunrise_find = object7.getString ("sunrise");
+               //find latitude
+               JSONObject object4 = jsonObject.getJSONObject ("coord");
+               lat_find = object4.getDouble ("lat");
 
 
-                //find sunset
-                JSONObject object8 = jsonObject.getJSONObject ("sys");
-                sunset_find = object8.getString ("sunset");
-                //long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
-              //  Date df2 = new Date (dv2);
-                //@SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
+               //find longitude
+               JSONObject object5 = jsonObject.getJSONObject ("coord");
+               lon_find = object5.getDouble ("lon");
 
 
-                //find pressure
-                JSONObject object9 = jsonObject.getJSONObject ("main");
-                pressure_find = object9.getString ("pressure");
+               //find humidity
+               JSONObject object6 = jsonObject.getJSONObject ("main");
+               hum_find = object6.getInt ("humidity");
 
 
-                //find windSpeed
-                JSONObject object10 = jsonObject.getJSONObject ("wind");
-                windSpeed_find = object10.getString ("speed");
+               //find sunrise
+               JSONObject object7 = jsonObject.getJSONObject ("sys");
+               sunrise_find = object7.getString ("sunrise");
 
 
-            } catch (IOException ioException) {
-                ioException.printStackTrace ();
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace ();
-            }
+               //find sunset
+               JSONObject object8 = jsonObject.getJSONObject ("sys");
+               sunset_find = object8.getString ("sunset");
+               //long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
+               //  Date df2 = new Date (dv2);
+               //@SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
 
-            return null;}
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute (aVoid);
-            country.setText (country_find);
-            time.setText (date);
-            city.setText (city_find);
-            long dv = Long.parseLong (sunrise_find) * 1000;// it needs to be in milisecond
-            Date df = new Date (dv);
-            @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
-            sunrise.setText (vv);
-            long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
-            Date df2 = new Date (dv2);
-            @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
-            sunset.setText (vv2);
-            imageView = (ImageView) findViewById (R.id.imageButton);
-            Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
-            latitude1.setText (lat_find + "°  N ");
-            longitude1.setText (lon_find + "°  E ");
-            temp.setText (temp_find + " °C ");
-            pressure.setText (pressure_find + "  hPa");
-            wind_speed.setText (windSpeed_find + "  km/h");
-            humidity.setText (hum_find + " %");
+               //find pressure
+               JSONObject object9 = jsonObject.getJSONObject ("main");
+               pressure_find = object9.getString ("pressure");
 
-        }
-    }
-    }
+
+               //find windSpeed
+               JSONObject object10 = jsonObject.getJSONObject ("wind");
+               windSpeed_find = object10.getString ("speed");
+
+               country.setText (country_find);
+               time.setText (date);
+               city.setText (city_find);
+               long dv = Long.parseLong (sunrise_find) * 1000;// it needs to be in milisecond
+               Date df = new Date (dv);
+               @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
+               sunrise.setText (vv);
+               long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
+               Date df2 = new Date (dv2);
+               @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
+               sunset.setText (vv2);
+               imageView = (ImageView) findViewById (R.id.imageButton);
+               Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
+               latitude1.setText (lat_find + "°  N ");
+               longitude1.setText (lon_find + "°  E ");
+               temp.setText (temp_find + " °C ");
+               pressure.setText (pressure_find + "  hPa");
+               wind_speed.setText (windSpeed_find + "  km/h");
+               humidity.setText (hum_find + " %");
+
+           } catch (JSONException jsonException) {
+               jsonException.printStackTrace ();
+           }
+
+       }
+   }}
