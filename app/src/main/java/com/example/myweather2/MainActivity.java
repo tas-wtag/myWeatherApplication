@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView sunrise;
     TextView sunset;
     TextView wind_speed;
+
+
     //TextView lattt;
    // TextView lonnn;
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
@@ -209,9 +211,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         lati=location.getLatitude();
         longi=location.getLongitude();
-
+        String lat = String.valueOf (lati);
+        String lon = String.valueOf (longi);
         //lattt.setText(lat);
-       // lonnn.setText (lon);
+        //lonnn.setText (lon);
 
     }
     @Override
@@ -275,19 +278,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            progressDialog.setCancelable(false);
            progressDialog.show();
        }
-       String inputLine;
-       String dataParsed = "";
-       String singleParsed = "";
-
-
        @Override
        protected String doInBackground(String... params) {
+
+           String inputLine="";
            try {
-               String lat = String.valueOf (lati);
-               String lon = String.valueOf (longi);
-
-
-               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + lat + "&lon=" + lon + "&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               URL url = new URL ("https://api.openweathermap.org/data/2.5/onecall?lat=23.810331&lon=90.412521&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
                InputStream inputStream = httpURLConnection.getInputStream ();
@@ -296,8 +292,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                while ((inputLine = bufferedReader.readLine ()) != null) {
                    response.append (inputLine);
                }
-
-
+               Log.d ("***data",response.toString ());
            } catch (IOException ioException) {
                ioException.printStackTrace ();
            }
@@ -307,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
        //@SuppressLint("SetTextI18n")
        @Override
        protected void onPostExecute(String aVoid) {
-           Log.d("data", aVoid.toString());
+           //Log.d("data", aVoid.toString());
            progressDialog.dismiss();
 
            try {
