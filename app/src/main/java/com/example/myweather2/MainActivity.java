@@ -36,6 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -94,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
-        checkLocationPermission();
+        //checkLocationPermission();
+
 
         button = findViewById (R.id.button);
         next = (Button) findViewById (R.id.next);
@@ -124,10 +127,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 startActivity (intent);
             }
         });
-   button.setOnClickListener (new View.OnClickListener () {
+        button.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View v) {
-                fetchData process = new fetchData ();
+                FetchData process = new FetchData ();
                 process.execute ();
 
             }
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
 //location
-    public boolean checkLocationPermission() {
+  public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -211,8 +214,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         lati=location.getLatitude();
         longi=location.getLongitude();
-        String lat = String.valueOf (lati);
-        String lon = String.valueOf (longi);
+
         //lattt.setText(lat);
         //lonnn.setText (lon);
 
@@ -248,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, this);
-
     }
 
     @Override
@@ -267,9 +268,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         locationManager.removeUpdates(this);
     }
-   private class fetchData extends AsyncTask<String, String, String> {
 
-       @Override
+   private class FetchData extends AsyncTask<String, String, String> {
+
+     /* @Override
        protected void onPreExecute() {
            super.onPreExecute();
            // display a progress dialog for good user experiance
@@ -277,33 +279,40 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            progressDialog.setMessage("Please Wait");
            progressDialog.setCancelable(false);
            progressDialog.show();
-       }
+       }*/
        @Override
        protected String doInBackground(String... params) {
-
-           String inputLine="";
+          // String lat = String.valueOf (lati);
+           //String lon = String.valueOf (longi);
+           String inputLine;
+           StringBuilder result = new StringBuilder();
            try {
-               URL url = new URL ("https://api.openweathermap.org/data/2.5/onecall?lat=23.810331&lon=90.412521&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?lat=23&lon=90&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
                InputStream inputStream = httpURLConnection.getInputStream ();
+               //InputStreamReader isw = new InputStreamReader(inputStream);
                BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-               StringBuffer response = new StringBuffer ();
+               // StringBuffer response = new StringBuffer ();
                while ((inputLine = bufferedReader.readLine ()) != null) {
-                   response.append (inputLine);
+                   result.append (inputLine);
                }
-               Log.d ("***data",response.toString ());
-           } catch (IOException ioException) {
-               ioException.printStackTrace ();
+               Log.d ("***data", result.toString ());
+           } catch (ProtocolException e) {
+               e.printStackTrace ();
+           } catch (MalformedURLException e) {
+               e.printStackTrace ();
+           } catch (IOException e) {
+               e.printStackTrace ();
            }
-           return inputLine;
-       }
+           return result.toString ();
+    }
 
-       //@SuppressLint("SetTextI18n")
+           //@SuppressLint("SetTextI18n")
        @Override
        protected void onPostExecute(String aVoid) {
            //Log.d("data", aVoid.toString());
-           progressDialog.dismiss();
+           //progressDialog.dismiss();
 
            try {
                //find country
@@ -396,4 +405,5 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            }
 
        }
-   }}
+   }
+}
