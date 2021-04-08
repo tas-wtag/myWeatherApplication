@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
-        //checkLocationPermission();
+        checkLocationPermission();
 
 
         button = findViewById (R.id.button);
@@ -269,9 +269,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager.removeUpdates(this);
     }
 
-   private class FetchData extends AsyncTask<String, String, String> {
+   private class FetchData extends AsyncTask<String, Void, String> {
 
-     /* @Override
+      @Override
        protected void onPreExecute() {
            super.onPreExecute();
            // display a progress dialog for good user experiance
@@ -279,15 +279,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            progressDialog.setMessage("Please Wait");
            progressDialog.setCancelable(false);
            progressDialog.show();
-       }*/
+       }
        @Override
        protected String doInBackground(String... params) {
-          // String lat = String.valueOf (lati);
-           //String lon = String.valueOf (longi);
+           String lat = String.valueOf (lati);
+           String lon = String.valueOf (longi);
            String inputLine;
            StringBuilder result = new StringBuilder();
            try {
-               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?lat=23&lon=90&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
                InputStream inputStream = httpURLConnection.getInputStream ();
@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                    result.append (inputLine);
                }
                Log.d ("***data", result.toString ());
+               progressDialog.dismiss();
            } catch (ProtocolException e) {
                e.printStackTrace ();
            } catch (MalformedURLException e) {
@@ -312,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
        @Override
        protected void onPostExecute(String aVoid) {
            //Log.d("data", aVoid.toString());
-           //progressDialog.dismiss();
+
 
            try {
                //find country
@@ -323,50 +324,57 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                //find city
                city_find = jsonObject.getString ("name");
-
+               city.setText (city_find);
 
                //find temp
                JSONObject object2 = jsonObject.getJSONObject ("main");
                temp_find = object2.getString ("temp");
-
+               temp.setText (temp_find + " °C ");
 
                //find image icon
                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
                JSONObject object3 = jsonArray.getJSONObject (0);
                img = object3.getString ("icon");
-
+               imageView = (ImageView) findViewById (R.id.imageButton);
+               Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
 
                //find date
                Calendar calender = Calendar.getInstance ();
                @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy \nHH:mm:ssa");
                //std.setTimeZone(TimeZone.getTimeZone("UTC"));
                date = std.format (calender.getTime ());
-
+               time.setText (date);
 
                //find latitude
                JSONObject object4 = jsonObject.getJSONObject ("coord");
                lat_find = object4.getDouble ("lat");
-
+               latitude1.setText (lat_find + "°  N ");
 
                //find longitude
                JSONObject object5 = jsonObject.getJSONObject ("coord");
                lon_find = object5.getDouble ("lon");
-
+               longitude1.setText (lon_find + "°  E ");
 
                //find humidity
                JSONObject object6 = jsonObject.getJSONObject ("main");
                hum_find = object6.getInt ("humidity");
-
+               humidity.setText (hum_find + " %");
 
                //find sunrise
                JSONObject object7 = jsonObject.getJSONObject ("sys");
                sunrise_find = object7.getString ("sunrise");
-
+               long dv = Long.parseLong (sunrise_find) * 1000;// it needs to be in milisecond
+               Date df = new Date (dv);
+               @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
+               sunrise.setText (vv);
 
                //find sunset
                JSONObject object8 = jsonObject.getJSONObject ("sys");
                sunset_find = object8.getString ("sunset");
-               //long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
+               long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
+               Date df2 = new Date (dv2);
+               @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
+               sunset.setText (vv2); //long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
                //  Date df2 = new Date (dv2);
                //@SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
 
@@ -374,31 +382,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                //find pressure
                JSONObject object9 = jsonObject.getJSONObject ("main");
                pressure_find = object9.getString ("pressure");
-
+               pressure.setText (pressure_find + "  hPa");
 
                //find windSpeed
                JSONObject object10 = jsonObject.getJSONObject ("wind");
                windSpeed_find = object10.getString ("speed");
-
-               country.setText (country_find);
-               time.setText (date);
-               city.setText (city_find);
-               long dv = Long.parseLong (sunrise_find) * 1000;// it needs to be in milisecond
-               Date df = new Date (dv);
-               @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
-               sunrise.setText (vv);
-               long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
-               Date df2 = new Date (dv2);
-               @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
-               sunset.setText (vv2);
-               imageView = (ImageView) findViewById (R.id.imageButton);
-               Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
-               latitude1.setText (lat_find + "°  N ");
-               longitude1.setText (lon_find + "°  E ");
-               temp.setText (temp_find + " °C ");
-               pressure.setText (pressure_find + "  hPa");
                wind_speed.setText (windSpeed_find + "  km/h");
-               humidity.setText (hum_find + " %");
+
 
            } catch (JSONException jsonException) {
                jsonException.printStackTrace ();
