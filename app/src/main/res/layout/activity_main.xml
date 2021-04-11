@@ -109,7 +109,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
-            android:text="K"
+            android:text=" °C"
             android:textColor="#F1EEEE"
             android:textSize="65sp"
             app:layout_constraintBottom_toBottomOf="parent"

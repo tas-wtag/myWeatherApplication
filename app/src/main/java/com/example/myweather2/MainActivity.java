@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     private TextView finalResult;
     ProgressDialog progressDialog;
-
+    private static MainActivity instance;
     //location
     protected LocationManager locationManager ;
     protected LocationListener locationListener;
@@ -92,12 +92,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
    // TextView lonnn;
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
+   /* public static MainActivity getInstance() {
+        return instance;
+    }*/
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
         checkLocationPermission();
 
+      /*  Intent intent = new Intent(MainActivity.this , SecondActivity.class);
+        intent.putExtra("Latitude", latitude);
+        intent.putExtra("Longitude", longitude);
+        startActivity(intent);*/
 
         button = findViewById (R.id.button);
         next = (Button) findViewById (R.id.next);
@@ -119,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        instance = this;
 
         next.setOnClickListener (new View.OnClickListener () {
             @Override
@@ -271,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
    private class FetchData extends AsyncTask<String, Void, String> {
 
-      @Override
+    /*  @Override
        protected void onPreExecute() {
            super.onPreExecute();
            // display a progress dialog for good user experiance
@@ -279,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            progressDialog.setMessage("Please Wait");
            progressDialog.setCancelable(false);
            progressDialog.show();
-       }
+       }*/
        @Override
        protected String doInBackground(String... params) {
            String lat = String.valueOf (lati);
@@ -298,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                    result.append (inputLine);
                }
                Log.d ("***data", result.toString ());
-               progressDialog.dismiss();
+              // progressDialog.dismiss();
            } catch (ProtocolException e) {
                e.printStackTrace ();
            } catch (MalformedURLException e) {
