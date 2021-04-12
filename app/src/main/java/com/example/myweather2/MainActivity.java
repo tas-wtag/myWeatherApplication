@@ -88,9 +88,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView wind_speed;
 
 
+
     //TextView lattt;
    // TextView lonnn;
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
+
 
    /* public static MainActivity getInstance() {
         return instance;
@@ -135,7 +137,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent (MainActivity.this, SecondActivity.class);
-                startActivity (intent);
+                //Intent intent = new Intent(ChooseFromMapActivity.this , GoSendActivity.class);
+                intent.putExtra("Latitude", lati);
+                intent.putExtra("Longitude", longi);
+                startActivity(intent);
             }
         });
         button.setOnClickListener (new View.OnClickListener () {
