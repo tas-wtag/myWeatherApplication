@@ -1,4 +1,4 @@
-package com.example.myweather2;
+package com.weatherupdate.glare;
 
 import android.content.Context;
 

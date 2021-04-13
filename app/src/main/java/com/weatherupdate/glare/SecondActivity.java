@@ -1,18 +1,13 @@
-package com.example.myweather2;
+package com.weatherupdate.glare;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,8 +94,9 @@ public class SecondActivity extends AppCompatActivity {
 
                     JSONObject daily = ja.getJSONObject (i);
 
-                   //JSONObject wt=daily.getJSONObject ("feels_like");
-                    rain2=daily.getString ("humidity");
+                    JSONArray ja2 = daily.getJSONArray ("weather");
+                    JSONObject m = ja2.getJSONObject (0);
+                    rain2 = m.getString ("main");
 
                     JSONObject temperature = daily.getJSONObject("temp");
                     temp2 = temperature.getString ("day");

@@ -1,4 +1,4 @@
-package com.example.myweather2;
+package com.weatherupdate.glare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -87,10 +87,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView sunset;
     TextView wind_speed;
 
-
-
-    //TextView lattt;
-   // TextView lonnn;
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
 
@@ -105,12 +101,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView (R.layout.activity_main);
         checkLocationPermission();
 
-      /*  Intent intent = new Intent(MainActivity.this , SecondActivity.class);
-        intent.putExtra("Latitude", latitude);
-        intent.putExtra("Longitude", longitude);
-        startActivity(intent);*/
-
-        button = findViewById (R.id.button);
+        //button = findViewById (R.id.button);
         next = (Button) findViewById (R.id.next);
         country = findViewById (R.id.country);
         city = findViewById (R.id.city);
@@ -125,37 +116,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         pressure = findViewById (R.id.pressure);
         wind_speed = findViewById (R.id.WindSpeed);
 
-      //  lattt=findViewById (R.id.lat);
-       // lonnn=findViewById (R.id.lon);
-
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-
-        instance = this;
-
         next.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent (MainActivity.this, SecondActivity.class);
-                //Intent intent = new Intent(ChooseFromMapActivity.this , GoSendActivity.class);
                 intent.putExtra("Latitude", lati);
                 intent.putExtra("Longitude", longi);
                 startActivity(intent);
             }
         });
-        button.setOnClickListener (new View.OnClickListener () {
+       /* button.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View v) {
                 FetchData process = new FetchData ();
-                process.execute ();
+                 process.execute ();
 
             }
-        });
-
-
-        //simpleList = (ListView) findViewById(R.id.simpleListView);
-        //SecondActivity customAdapter = new SecondActivity(getApplicationContext(), countryList, flags);
-        //simpleList.setAdapter((ListAdapter) customAdapter);
+        });*/
     }
 
 //location
@@ -227,13 +206,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
     @Override
     public void onLocationChanged(Location location) {
-
         lati=location.getLatitude();
         longi=location.getLongitude();
-
-        //lattt.setText(lat);
-        //lonnn.setText (lon);
-
+        FetchData process = new FetchData ();
+        process.execute ();
     }
     @Override
     public void onProviderDisabled(String provider) {
@@ -303,13 +279,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            String inputLine;
            StringBuilder result = new StringBuilder();
            try {
-               URL url = new URL ("http://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
-               InputStream inputStream = httpURLConnection.getInputStream ();
-               //InputStreamReader isw = new InputStreamReader(inputStream);
-               BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-               // StringBuffer response = new StringBuffer ();
+             InputStream inputStream = httpURLConnection.getInputStream ();
+                   BufferedReader  bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
                while ((inputLine = bufferedReader.readLine ()) != null) {
                    result.append (inputLine);
                }
@@ -325,12 +299,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
            return result.toString ();
     }
 
-           //@SuppressLint("SetTextI18n")
+           @SuppressLint("SetTextI18n")
        @Override
        protected void onPostExecute(String aVoid) {
-           //Log.d("data", aVoid.toString());
-
-
            try {
                //find country
                JSONObject jsonObject = new JSONObject (aVoid);

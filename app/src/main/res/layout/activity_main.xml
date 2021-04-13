@@ -24,43 +24,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:paddingLeft="0dp"
-        android:paddingTop="10dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="10dp"
-        android:text="Show Weather"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:backgroundTint="#2E386E"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:rippleColor="#F4F1F1"
-        tools:ignore="UnknownId" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="398dp"
-        android:layout_height="302dp"
+        android:layout_width="396dp"
+        android:layout_height="386dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="6dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"
         android:background="#8C0B0A0A"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:ignore="MissingConstraints">
 
         <TextView
@@ -135,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="108dp"
             android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
             android:paddingLeft="10dp"
@@ -147,7 +125,7 @@
             android:textSize="20sp"
             app:backgroundTint="#263065"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.993"
             app:layout_constraintStart_toEndOf="@+id/temp"
             app:layout_constraintTop_toBottomOf="@+id/imageButton"
             app:rippleColor="#FFFFFF" />
@@ -156,20 +134,21 @@
             android:id="@+id/tv_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="7pt"
             android:layout_below="@+id/btn_run"
             android:layout_centerHorizontal="true"
+            android:textSize="7pt"
             tools:ignore="ExtraText,UnknownId" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="402dp"
-        android:layout_height="247dp"
+        android:id="@+id/constraintLayout2"
+        android:layout_width="403dp"
+        android:layout_height="254dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:background="#8C0B0A0A"
