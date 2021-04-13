@@ -89,12 +89,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
-
-   /* public static MainActivity getInstance() {
-        return instance;
-    }*/
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
