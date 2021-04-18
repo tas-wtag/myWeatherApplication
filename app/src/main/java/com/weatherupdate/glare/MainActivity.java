@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     double lati;
     double longi;
     TextView TextView3;
-    Button button;
+   // Button button;
     Button next;
     ImageView imageView;
     TextView country, city, temp, time;

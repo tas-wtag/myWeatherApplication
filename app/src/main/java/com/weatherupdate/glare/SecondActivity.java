@@ -1,13 +1,19 @@
 package com.weatherupdate.glare;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,27 +27,37 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity<weatherData2> extends AppCompatActivity {
 
-    private ListView lv;
-    String temp2, date2;
-    String rain2;
-    String vv;
+    public ListView lv;
+    public String temp2, date2;
+    public String rain2;
+    public String img2;
+    public String img3;
+    public String vv;
+    public String imageurl;
     double  latitude2;
     double longitude2;
-    ArrayList<HashMap<String, String>> weatherData;
-    //public static final String IMG_URL = "https://openweathermap.org/img/w/";
+
+
+
+    ImageView imageView2;
+    public List<SecondActivity> wdetails=new ArrayList<> ();
+    ArrayList<Weatherdata> weatherList;
+    public static final String IMG_URL2 = "https://openweathermap.org/img/w/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       // MainActivity loc=new MainActivity (SecondActivity.this);
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_listview);
+        setContentView (R.layout.activity_second);
         //MainActivity.checkLocationPermission();
 
-        weatherData = new ArrayList<> ();
-        lv =(ListView) findViewById (R.id.listview);
+        weatherList = new ArrayList<> ();
+        lv =(ListView) findViewById (R.id.listView);
+
+
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -49,12 +65,16 @@ public class SecondActivity extends AppCompatActivity {
             longitude2 = extras.getDouble ("Longitude");
         }
 
-        GetData getData = new GetData ();
+        GetData getData = new GetData (lv);
         getData.execute ();
     }
 
     public class GetData extends AsyncTask<String, String, String> {
+        public GetData(ListView listview) {
+            this.listview = listview;
+        }
 
+        public ListView listview;
         @Override
         protected String doInBackground(String... strings) {
             String current = "";
@@ -84,9 +104,42 @@ public class SecondActivity extends AppCompatActivity {
         @SuppressLint("SimpleDateFormat")
         @Override
         protected void onPostExecute(String s) {
-            //super.onPostExecute (s);
+           /* try {
+                JSONObject jo = new JSONObject (s);
+                JSONArray ja = jo.getJSONArray ("daily");
+                if(ja!=null){
+                    for (int i = 1; i < ja.length (); i++) {
+                        SecondActivity wData=new SecondActivity ();
+                        JSONObject daily = ja.getJSONObject (i);
 
-            try {
+                        wData.temp2=daily.getJSONObject ("temp").getString ("day");
+
+                        JSONArray ja2 = daily.getJSONArray ("weather");
+                        wData.rain2=ja2.getJSONObject (0).getString ("main");
+
+                        date2=daily.getString ("dt");
+                        long dv = Long.parseLong (date2) * 1000;
+                        Date df = new Date (dv);
+                        wData.vv = new SimpleDateFormat ("dd/MM/yyyy").format (df);
+
+                        img2=ja2.getJSONObject (0).getString ("icon");
+
+                        wData.img3=IMG_URL2+ img2 + ".png";
+                        wdetails.add(wData);
+
+                    }
+
+                }
+               // ListView lv=(ListView)this.activity.findViewById (R.id.listView);
+               // CustomAdapter adapter=new CustomAdapter (this.context, wdetails);
+              //  lv.setAdapter (adapter);
+
+           // } catch (JSONException e) {
+              //  e.printStackTrace ();
+           // }
+            //super.onPostExecute (s);*/
+
+           try {
                 JSONObject jo = new JSONObject (s);
                 JSONArray ja = jo.getJSONArray ("daily");
 
@@ -104,28 +157,43 @@ public class SecondActivity extends AppCompatActivity {
                     date2 = daily.getString ("dt");
                     long dv = Long.parseLong (date2) * 1000;
                     Date df = new Date (dv);
-                    vv = new SimpleDateFormat ("MM/dd/yyyy").format (df);
+                    vv = new SimpleDateFormat ("dd/MM/yyyy").format (df);
 
+                    JSONArray ja3 = daily.getJSONArray ("weather");
+                    JSONObject icon = ja3.getJSONObject (0);
+                    img2 = icon.getString ("icon");
+                    //imageView2 = (ImageView) findViewById (R.id.imageView2);
+                    img3=IMG_URL2 + img2 + ".png";
 
-                    HashMap<String, String> weather = new HashMap<> ();
+                    Weatherdata weatherdata=new Weatherdata (temp2, rain2,img3,vv);
+                    weatherList.add(weatherdata);
+                    //Weatherdata(temp2, rain2,img3,vv);
+                   /* HashMap<String, String> weather = new HashMap<> ();
                     weather.put ("day", temp2);
                     weather.put ("dt", vv);
-                    weather.put("humidity",rain2);
+                    weather.put("main",rain2);
+                    weather.put("img",img3);
 
-                    weatherData.add (weather);
+                    weatherData.add (weather);*/
+
                 }
             } catch (Exception e) {
                 e.printStackTrace ();
             }
 
 
-            ListAdapter adapter = new SimpleAdapter (
+            /*ListAdapter adapter = new SimpleAdapter (
                     SecondActivity.this,
                     weatherData,
                     R.layout.row_layout,
-                    new String[]{"day", "dt","humidity"},
-                    new int[]{R.id.textView20, R.id.textView21,R.id.rain});
-            lv.setAdapter (adapter);
+                    new String[]{"day", "dt","main","img"},
+                    new int[]{R.id.textView20, R.id.textView21,R.id.rain,R.id.imageView2});
+                    lv.setAdapter (adapter);*/
+
+            //lv=(ListView)findViewById(R.id.listView);
+            Customlist adapter = new Customlist(SecondActivity.this, weatherList);
+            listview.setAdapter(adapter);
         }
     }
-    }
+}
+
