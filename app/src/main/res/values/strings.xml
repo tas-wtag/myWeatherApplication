@@ -3,4 +3,7 @@
     <string name="ok" >ok</string>
     <string name="title_location_permission">Location Permission</string>
     <string name="text_location_permission">"Do you want to access the location"</string>
+    <string name="select_city">Select city</string>
+    <string name="MAPBOX_ACCESS_TOKEN">pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A</string>
+    <string name="mapbox_access_token" />
 </resources>

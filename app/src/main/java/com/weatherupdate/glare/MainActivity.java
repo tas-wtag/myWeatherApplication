@@ -2,6 +2,7 @@ package com.weatherupdate.glare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,17 +15,28 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -43,9 +55,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener{
 
-    public static TextView data;
 
     ListView simpleList;
 
@@ -74,8 +85,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     EditText editText1, editText2;
     double lati;
     double longi;
-    TextView TextView3;
-   // Button button;
+
+    Button searchCity;
     Button next;
     ImageView imageView;
     TextView country, city, temp, time;
@@ -87,7 +98,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView sunset;
     TextView wind_speed;
 
+    //private static  final String[] cities=new String[]{"Afganstan","Alabama","albania","Algeria","Angola","Andorra"};
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
+
+    public MainActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +110,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView (R.layout.activity_main);
         checkLocationPermission();
 
-        //button = findViewById (R.id.button);
         next = (Button) findViewById (R.id.next);
+        searchCity=findViewById (R.id.search);
+
         country = findViewById (R.id.country);
         city = findViewById (R.id.city);
         temp = findViewById (R.id.temp);
@@ -111,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         wind_speed = findViewById (R.id.WindSpeed);
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
         next.setOnClickListener (new View.OnClickListener () {
             @Override
             public void onClick(View view) {
@@ -121,15 +137,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 startActivity(intent);
             }
         });
-       /* button.setOnClickListener (new View.OnClickListener () {
-            @Override
-            public void onClick(View v) {
-                FetchData process = new FetchData ();
-                 process.execute ();
 
+        searchCity.setOnClickListener (new View.OnClickListener () {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent (MainActivity.this, SearchClass.class);
+                startActivity(intent);
             }
-        });*/
+        });
+
+
     }
+
 
 //location
   public boolean checkLocationPermission() {
@@ -255,7 +274,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager.removeUpdates(this);
     }
 
-   private class FetchData extends AsyncTask<String, Void, String> {
+
+    private class FetchData extends AsyncTask<String, Void, String> {
 
     /*  @Override
        protected void onPreExecute() {
@@ -344,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                //find sunrise
                JSONObject object7 = jsonObject.getJSONObject ("sys");
                sunrise_find = object7.getString ("sunrise");
-               long dv = Long.parseLong (sunrise_find) * 1000;// it needs to be in milisecond
+               long dv = Long.parseLong (sunrise_find) * 1000;
                Date df = new Date (dv);
                @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
                sunrise.setText (vv);
@@ -352,13 +372,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                //find sunset
                JSONObject object8 = jsonObject.getJSONObject ("sys");
                sunset_find = object8.getString ("sunset");
-               long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
+               long dv2 = Long.parseLong (sunset_find) * 1000;
                Date df2 = new Date (dv2);
                @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
-               sunset.setText (vv2); //long dv2 = Long.parseLong (sunset_find) * 1000;// it needs to be in milisecond
-               //  Date df2 = new Date (dv2);
-               //@SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
-
+               sunset.setText (vv2);
 
                //find pressure
                JSONObject object9 = jsonObject.getJSONObject ("main");

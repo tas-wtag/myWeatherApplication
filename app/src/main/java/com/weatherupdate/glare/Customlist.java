@@ -1,5 +1,6 @@
 package com.weatherupdate.glare;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class Customlist extends ArrayAdapter<Weatherdata> {
     private Context context;
@@ -25,6 +29,7 @@ public class Customlist extends ArrayAdapter<Weatherdata> {
         this.weatherdata= weatherdata;
 
     }
+    @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from (getContext ());
@@ -39,18 +44,7 @@ public class Customlist extends ArrayAdapter<Weatherdata> {
         temp2.setText (temperature.getTemp2 ());
         rain.setText (temperature.getRain2 ());
         date2.setText (temperature.getVv ());
-        Picasso.get ().load (temperature.getImg3 ()).into (imageView);
-
-        // Contact
-      /*  HashMap<String, String> weather = weatherdata.get(position);
-
-        String temp3 = weather.get ("day");
-        String date3 = weather.get("vv");
-        String rain3 = weather.get("main");
-        String img = weather.get(Picasso.get ().load ("img"));
-        weatherdata.add (weather);*/
-
-        // Do something with value id, name and imageurl
+        Picasso.get().load (temperature.getImg3 ()).placeholder(R.drawable.hello).into (imageView);
 
         return convertView;
     }
