@@ -25,9 +25,6 @@ public class SearchClass extends AppCompatActivity {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_third);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-        }
 
         Mapbox.getInstance(this, getString(R.string.MAPBOX_ACCESS_TOKEN));
         Intent intent = new PlaceAutocomplete.IntentBuilder()
