@@ -2,7 +2,6 @@ package com.weatherupdate.glare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,28 +14,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -82,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     String sunrise_find;
     String windSpeed_find;
     String pressure_find;
-    EditText editText1, editText2;
     double lati;
     double longi;
 
@@ -98,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     TextView sunset;
     TextView wind_speed;
 
-    //private static  final String[] cities=new String[]{"Afganstan","Alabama","albania","Algeria","Angola","Andorra"};
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
     public MainActivity() {
@@ -110,21 +95,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         setContentView (R.layout.activity_main);
         checkLocationPermission();
 
-        next = (Button) findViewById (R.id.next);
+        next =  findViewById (R.id.next);
         searchCity=findViewById (R.id.search);
 
-        country = findViewById (R.id.country);
+        country = findViewById (R.id.cityName);
         city = findViewById (R.id.city);
-        temp = findViewById (R.id.temp);
-        time = findViewById (R.id.textView2);
+        temp = findViewById (R.id.temperature);
+        time = findViewById (R.id.dateTime);
 
-        latitude1 = findViewById (R.id.Latitude);
-        longitude1 = findViewById (R.id.Longitude);
-        humidity = findViewById (R.id.Humidity);
+        latitude1 = findViewById (R.id.latitude3);
+        longitude1 = findViewById (R.id.longitude3);
+        humidity = findViewById (R.id.Humidity3);
         sunrise = findViewById (R.id.Sunrise);
         sunset = findViewById (R.id.Sunset);
-        pressure = findViewById (R.id.pressure);
-        wind_speed = findViewById (R.id.WindSpeed);
+        pressure = findViewById (R.id.pressure3);
+        wind_speed = findViewById (R.id.windSpeed3);
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
@@ -276,16 +261,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
 
 
     private class FetchData extends AsyncTask<String, Void, String> {
-
-    /*  @Override
-       protected void onPreExecute() {
-           super.onPreExecute();
-           // display a progress dialog for good user experiance
-           progressDialog = new ProgressDialog (MainActivity.this);
-           progressDialog.setMessage("Please Wait");
-           progressDialog.setCancelable(false);
-           progressDialog.show();
-       }*/
        @Override
        protected String doInBackground(String... params) {
            String lat = String.valueOf (lati);
@@ -301,8 +276,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
                while ((inputLine = bufferedReader.readLine ()) != null) {
                    result.append (inputLine);
                }
-               Log.d ("***data", result.toString ());
-              // progressDialog.dismiss();
            } catch (ProtocolException e) {
                e.printStackTrace ();
            } catch (MalformedURLException e) {
@@ -336,13 +309,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
                JSONObject object3 = jsonArray.getJSONObject (0);
                img = object3.getString ("icon");
-               imageView = (ImageView) findViewById (R.id.imageButton);
+               imageView = (ImageView) findViewById (R.id.image);
                Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
 
                //find date
                Calendar calender = Calendar.getInstance ();
                @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy \nHH:mm:ssa");
-               //std.setTimeZone(TimeZone.getTimeZone("UTC"));
                date = std.format (calender.getTime ());
                time.setText (date);
 

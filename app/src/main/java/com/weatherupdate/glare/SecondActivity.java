@@ -120,7 +120,7 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
                     date2 = daily.getString ("dt");
                     long dv = Long.parseLong (date2) * 1000;
                     Date df = new Date (dv);
-                    vv = new SimpleDateFormat ("dd/MM/yyyy").format (df);
+                    vv = new SimpleDateFormat ("dd/MM/yyyy ").format (df);
 
                     JSONArray ja3 = daily.getJSONArray ("weather");
                     JSONObject icon = ja3.getJSONObject (0);
