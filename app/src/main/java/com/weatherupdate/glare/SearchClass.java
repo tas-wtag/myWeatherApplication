@@ -160,27 +160,27 @@ public class SearchClass extends AppCompatActivity {
                 //find latitude
                 JSONObject object7 = jsonObject.getJSONObject ("coord");
                 findLat = object7.getString ("lat");
-                latitude.setText (findLat + "°  N ");
+                latitude.setText ("Latitude          "+findLat + "°  N ");
 
                 //find longitude
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
                 findLong = object5.getString ("lon");
-                longitude.setText (findLong + "°  E ");
+                longitude.setText ("Longitude      "+findLong + "°  E ");
 
                 //find humidity
                 JSONObject object6 = jsonObject.getJSONObject ("main");
                 findHum = object6.getString ("humidity");
-                humidity.setText (findHum + " %");
+                humidity.setText ("Humidity        "+findHum + " %");
 
                 //find pressure
                 JSONObject object9 = jsonObject.getJSONObject ("main");
                 findPressure = object9.getString ("pressure");
-                pressure.setText (findPressure + "  hPa");
+                pressure.setText ("Pressure        "+findPressure + "  hPa");
 
                 //find windSpeed
                 JSONObject object10 = jsonObject.getJSONObject ("wind");
                 findWS = object10.getString ("speed");
-                windSpeed.setText (findWS + "  km/h");
+                windSpeed.setText ("Wind Speed   "+findWS + "  km/h");
 
 
                 //findDate

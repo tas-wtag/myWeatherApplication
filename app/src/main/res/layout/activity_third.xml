@@ -109,130 +109,63 @@
             app:layout_constraintTop_toBottomOf="@+id/image">
 
             <TextView
-                android:id="@+id/humidity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:text="Humidity"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/longitude" />
-
-            <TextView
-                android:id="@+id/longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:text="Longitude"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/latitude" />
-
-            <TextView
-                android:id="@+id/latitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="15dp"
-                android:text="Latitude"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/longitude"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/pressure2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="15dp"
-                android:text="Pressure"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/humidity" />
-
-            <TextView
-                android:id="@+id/windSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:text="Wind Speed"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pressure2" />
-
-            <TextView
                 android:id="@+id/latitude3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="112dp"
-                android:layout_marginLeft="112dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="50dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/latitude"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/longitude3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="96dp"
-                android:layout_marginLeft="96dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="12dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/longitude"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/latitude3" />
 
             <TextView
                 android:id="@+id/Humidity3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="108dp"
-                android:layout_marginLeft="108dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/humidity"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/longitude3" />
 
             <TextView
                 android:id="@+id/pressure3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="108dp"
-                android:layout_marginLeft="108dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/pressure2"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Humidity3" />
 
             <TextView
                 android:id="@+id/windSpeed3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:layout_marginLeft="80dp"
+                android:layout_marginStart="100dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                app:layout_constraintStart_toEndOf="@+id/windSpeed"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pressure3" />
 
 
