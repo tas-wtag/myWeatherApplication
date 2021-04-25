@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -41,6 +42,10 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import static java.lang.Thread.*;
 
 public class MainActivity extends AppCompatActivity implements LocationListener{
 
@@ -83,6 +88,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     TextView sunrise;
     TextView sunset;
     TextView wind_speed;
+    TextView dateTime2;
+    TextView hour,minute,second;
+    int hou=0;
+    int min=0;
+    int sec=0;
+    boolean stopTimer=false;
+
+    TextClock textClock;
 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
@@ -111,6 +124,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         pressure = findViewById (R.id.pressure3);
         wind_speed = findViewById (R.id.windSpeed3);
 
+        hour=findViewById (R.id.hour);
+        minute=findViewById (R.id.min);
+        second=findViewById (R.id.sec);
+
+        //textClock=findViewById (R.id.digitalClock);
+        dateTime2=findViewById (R.id.dateTime2);
+
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
         next.setOnClickListener (new View.OnClickListener () {
@@ -130,8 +150,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
                 startActivity(intent);
             }
         });
+        Thread thread = new Thread() {
 
-
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Calendar calender = Calendar.getInstance ();
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy\nHH:mm:ss a");
+                                date = std.format (calender.getTime ());
+                                time.setText (date);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        thread.start();
     }
 
 
@@ -314,9 +354,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
 
                //find date
                Calendar calender = Calendar.getInstance ();
-               @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy \nHH:mm:ssa");
+               @SuppressLint("SimpleDateFormat") SimpleDateFormat std = new SimpleDateFormat ("dd/MM/yyyy");
                date = std.format (calender.getTime ());
-               time.setText (date);
+               //time.setText (date);
+               //initTimer();
 
                //find latitude
                JSONObject object4 = jsonObject.getJSONObject ("coord");
@@ -365,5 +406,5 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
            }
 
        }
-   }
+    }
 }

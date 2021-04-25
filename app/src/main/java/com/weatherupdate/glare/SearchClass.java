@@ -48,7 +48,6 @@ public class SearchClass extends AppCompatActivity {
     String findWS;
     String findPressure;
 
-
     TextView cityName;
     TextView dateTime;
     TextView temp;
