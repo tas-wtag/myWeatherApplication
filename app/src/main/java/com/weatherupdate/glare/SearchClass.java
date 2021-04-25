@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,14 +30,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
 public class SearchClass extends AppCompatActivity {
     protected String data2;
-    public String normalDate;
     String findCity;
     String findDate;
     String findSituation;
@@ -186,17 +185,19 @@ public class SearchClass extends AppCompatActivity {
                 //findDate
                 findDate = jsonObject.getString ("dt");
                 findTimeZone=jsonObject.getString ("timezone");
-                Calendar c= Calendar.getInstance(TimeZone.getTimeZone (findTimeZone));
-                c.setTimeInMillis (Long.parseLong (findDate));
-                DateFormat df=DateFormat.getDateInstance();
-                df.setTimeZone(c.getTimeZone());
-                normalDate=df.format(c.getTime());
-                dateTime.setText (normalDate);
+                int findDateInt=Integer.parseInt (findDate);
+                int findTimeZoneInt=Integer.parseInt (findTimeZone);
+                int dateToShowInt=findDateInt+findTimeZoneInt;
+                String dateToShow=Integer.toString(dateToShowInt);
+                long dateTimeLong = Long.parseLong (dateToShow) * 1000;
+                Date date = new Date(dateTimeLong);
+                SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
+                format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+                dateTime.setText (format.format(date));
 
             }   catch (JSONException jsonException) {
                 jsonException.printStackTrace ();
             }
-
         }
     }
 }
