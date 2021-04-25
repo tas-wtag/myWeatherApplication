@@ -89,13 +89,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
     TextView sunset;
     TextView wind_speed;
     TextView dateTime2;
-    TextView hour,minute,second;
-    int hou=0;
-    int min=0;
-    int sec=0;
-    boolean stopTimer=false;
-
-    TextClock textClock;
 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
 
@@ -124,11 +117,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener{
         pressure = findViewById (R.id.pressure3);
         wind_speed = findViewById (R.id.windSpeed3);
 
-        hour=findViewById (R.id.hour);
-        minute=findViewById (R.id.min);
-        second=findViewById (R.id.sec);
-
-        //textClock=findViewById (R.id.digitalClock);
         dateTime2=findViewById (R.id.dateTime2);
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
