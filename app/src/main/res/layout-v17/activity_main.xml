@@ -107,7 +107,7 @@
             app:layout_constraintVertical_bias="0.68" />
 
         <TextView
-            android:id="@+id/dateTime"
+            android:id="@+id/dateTime2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"

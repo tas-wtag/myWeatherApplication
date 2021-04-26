@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,7 +71,7 @@ public class SearchClass extends AppCompatActivity {
 
         cityName = findViewById (R.id.cityName);
         temp = findViewById (R.id.temperature);
-        dateTime = findViewById (R.id.dateTime);
+        dateTime = findViewById (R.id.dateTime2);
         image=findViewById (R.id.image);
         situation=findViewById (R.id.situation);
 
