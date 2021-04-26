@@ -120,20 +120,6 @@ public class MainActivity<doTask> extends AppCompatActivity implements LocationL
 
     }
 
-
-    /* public void startMinuteUpdater() {
-         IntentFilter intentFilter = new IntentFilter();
-         intentFilter.addAction(Intent.ACTION_TIME_TICK);
-         minuteUpdateReceiver = new BroadcastReceiver () {
-             @Override
-             public void onReceive(Context context, Intent intent) {
-                 counter++;
-          Log.d ("******data",String.valueOf (counter));
-             }
-         };
-         registerReceiver(minuteUpdateReceiver, intentFilter);
-     }*/
-
     //location
   public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
@@ -161,7 +147,6 @@ public class MainActivity<doTask> extends AppCompatActivity implements LocationL
                         .show ();
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions (this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -187,8 +172,6 @@ public class MainActivity<doTask> extends AppCompatActivity implements LocationL
 
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return ;
             }
@@ -218,17 +201,7 @@ public class MainActivity<doTask> extends AppCompatActivity implements LocationL
     @Override
     protected void onResume() {
         super.onResume();
-     //  startMinuteUpdater();
-
-
        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, this);
@@ -238,14 +211,6 @@ public class MainActivity<doTask> extends AppCompatActivity implements LocationL
     protected void onPause() {
         super.onPause();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
         }
         locationManager.removeUpdates(this);
     }
