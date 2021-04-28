@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     String timePause;
     String timePause2;
     SharedPreferences sharedPreferences;
+    SharedPreferences sharedPreferences2;
     //location
     protected LocationManager locationManager;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -111,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent (MainActivity.this, SecondActivity.class);
-                intent.putExtra ("Latitude", lati);
-                intent.putExtra ("Longitude", longi);
+                intent.putExtra ("Latitude", lat);
+                intent.putExtra ("Longitude", lon);
                 startActivity (intent);
             }
         });
@@ -224,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
+
+
     }
     @Override
     protected void onPause() {
@@ -239,11 +243,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
         locationManager.removeUpdates(this);
+
     }
 @Override
     protected void onStop() {
         super.onStop ( );
-    Log.d("stop", "STOP");
+      Log.d("stop", "STOP");
     }
 
     @Override
@@ -252,6 +257,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Log.d("start", "START");
     }
 
+    /*  @Override
+    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        savedInstanceState.putAll(savedInstanceState);
+        super.onSaveInstanceState (savedInstanceState);
+        Log.d("****D","saved");
+    }
+
+  @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState (savedInstanceState);
+        savedInstanceState.get(String.valueOf (savedInstanceState));
+        Log.d("****D","loaded");
+    }*/
 
     private class FetchData extends AsyncTask<String, Void, String> {
       TextView text;

@@ -37,8 +37,8 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
     public String img2;
     public String img3;
     public String vv;
-    double  latitude2;
-    double longitude2;
+    String latitude2;
+    String longitude2;
 
     public List<SecondActivity> wdetails=new ArrayList<> ();
     ArrayList<Weatherdata> weatherList;
@@ -55,8 +55,8 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude2 =extras.getDouble ("Latitude");
-            longitude2 = extras.getDouble ("Longitude");
+            latitude2 =extras.getString ("Latitude");
+            longitude2 = extras.getString ("Longitude");
         }
 
         GetData getData = new GetData (lv);
