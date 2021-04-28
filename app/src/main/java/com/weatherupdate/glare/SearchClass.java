@@ -5,9 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -57,7 +61,6 @@ public class SearchClass extends AppCompatActivity {
     TextView pressure;
     TextView windSpeed;
     TextView humidity;
-
     public static final String IMG_URL3 = "https://openweathermap.org/img/w/";
 
     private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A";
@@ -72,8 +75,8 @@ public class SearchClass extends AppCompatActivity {
         cityName = findViewById (R.id.cityName);
         temp = findViewById (R.id.temperature);
         dateTime = findViewById (R.id.dateTime2);
-        image=findViewById (R.id.image);
-        situation=findViewById (R.id.situation);
+        image = findViewById (R.id.image);
+        situation = findViewById (R.id.situation);
 
         latitude = findViewById (R.id.latitude3);
         longitude = findViewById (R.id.longitude3);
@@ -81,30 +84,31 @@ public class SearchClass extends AppCompatActivity {
         pressure = findViewById (R.id.pressure3);
         windSpeed = findViewById (R.id.windSpeed3);
 
-        Mapbox.getInstance(this, getString(R.string.MAPBOX_ACCESS_TOKEN));
-        Intent intent = new PlaceAutocomplete.IntentBuilder()
-                .accessToken(MAPBOX_ACCESS_TOKEN)
-                .placeOptions(placeOptions)
-                .build(this);
-        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+        Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
+        Intent intent = new PlaceAutocomplete.IntentBuilder ( )
+                .accessToken (MAPBOX_ACCESS_TOKEN)
+                .placeOptions (placeOptions)
+                .build (this);
+        startActivityForResult (intent, REQUEST_CODE_AUTOCOMPLETE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             data2=feature.toJson();
+
             try{
             JSONObject jsonObject = new JSONObject (data2);
             findCity= jsonObject.getString ("text");
-            cityName.setText (findCity);
+            //cityName.setText (findCity);
 
             DataFetch process = new DataFetch ();
             process.execute ();
+
             } catch (JSONException e) {
                 e.printStackTrace ( );
             }
-           // Toast.makeText(this, feature.text(), Toast.LENGTH_LONG).show();
         }
     }
     private class DataFetch extends AsyncTask<String, Void, String> {
@@ -138,60 +142,64 @@ public class SearchClass extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject (aVoid);
 
                 //find temp
-                JSONObject object2 = jsonObject.getJSONObject ("main");
-                findTemp= object2.getString ("temp");
-                temp.setText (findTemp + " °C ");
+                //JSONObject object2 = jsonObject.getJSONObject ("main");
+                //findTemp= object2.getString ("temp");
+                //temp.setText (findTemp + " °C ");
 
                 //find image icon
-                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-                JSONObject object3 = jsonArray.getJSONObject (0);
-                findImage = object3.getString ("icon");
-                Picasso.get ().load (IMG_URL3 + findImage + ".png").into (image);
+                //JSONArray jsonArray = jsonObject.getJSONArray ("weather");
+                //JSONObject object3 = jsonArray.getJSONObject (0);
+                //findImage = object3.getString ("icon");
+                //Picasso.get ().load (IMG_URL3 + findImage + ".png").into (image);
 
                 //find situation
-                JSONArray object4 = jsonObject.getJSONArray ("weather");
-                JSONObject  m= object4.getJSONObject (0);
-                findSituation = m.getString ("main");
-                situation.setText(findSituation);
+                //JSONArray object4 = jsonObject.getJSONArray ("weather");
+                //JSONObject  m= object4.getJSONObject (0);
+                //findSituation = m.getString ("main");
+                //situation.setText(findSituation);
 
                 //find latitude
                 JSONObject object7 = jsonObject.getJSONObject ("coord");
                 findLat = object7.getString ("lat");
-                latitude.setText ("Latitude          "+findLat + "°  N ");
+                //latitude.setText ("Latitude          "+findLat + "°  N ");
 
                 //find longitude
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
                 findLong = object5.getString ("lon");
-                longitude.setText ("Longitude      "+findLong + "°  E ");
+                //longitude.setText ("Longitude      "+findLong + "°  E ");
 
                 //find humidity
-                JSONObject object6 = jsonObject.getJSONObject ("main");
-                findHum = object6.getString ("humidity");
-                humidity.setText ("Humidity        "+findHum + " %");
+                //JSONObject object6 = jsonObject.getJSONObject ("main");
+                //findHum = object6.getString ("humidity");
+               // humidity.setText ("Humidity        "+findHum + " %");
 
                 //find pressure
-                JSONObject object9 = jsonObject.getJSONObject ("main");
-                findPressure = object9.getString ("pressure");
-                pressure.setText ("Pressure        "+findPressure + "  hPa");
+                //JSONObject object9 = jsonObject.getJSONObject ("main");
+                //findPressure = object9.getString ("pressure");
+                //pressure.setText ("Pressure        "+findPressure + "  hPa");
 
                 //find windSpeed
-                JSONObject object10 = jsonObject.getJSONObject ("wind");
-                findWS = object10.getString ("speed");
-                windSpeed.setText ("Wind Speed   "+findWS + "  km/h");
-
+                //JSONObject object10 = jsonObject.getJSONObject ("wind");
+                //findWS = object10.getString ("speed");
+                //windSpeed.setText ("Wind Speed   "+findWS + "  km/h");
 
                 //findDate
-                findDate = jsonObject.getString ("dt");
-                findTimeZone=jsonObject.getString ("timezone");
-                int findDateInt=Integer.parseInt (findDate);
-                int findTimeZoneInt=Integer.parseInt (findTimeZone);
-                int dateToShowInt=findDateInt+findTimeZoneInt;
-                String dateToShow=Integer.toString(dateToShowInt);
-                long dateTimeLong = Long.parseLong (dateToShow) * 1000;
-                Date date = new Date(dateTimeLong);
-                SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
-                format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-                dateTime.setText (format.format(date));
+                //findDate = jsonObject.getString ("dt");
+                //findTimeZone=jsonObject.getString ("timezone");
+                //int findDateInt=Integer.parseInt (findDate);
+                //int findTimeZoneInt=Integer.parseInt (findTimeZone);
+                //int dateToShowInt=findDateInt+findTimeZoneInt;
+                //String dateToShow=Integer.toString(dateToShowInt);
+                //long dateTimeLong = Long.parseLong (dateToShow) * 1000;
+                //Date date = new Date(dateTimeLong);
+                //SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
+                //format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+                //dateTime.setText (format.format(date));
+
+                Intent  i = new Intent(SearchClass.this, MainActivity.class);
+                i.putExtra("latitude3",findLat);
+                i.putExtra("longitude3",findLong);
+                startActivity (i);
 
             }   catch (JSONException jsonException) {
                 jsonException.printStackTrace ();

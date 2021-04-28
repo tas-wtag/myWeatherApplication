@@ -40,9 +40,6 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
     double  latitude2;
     double longitude2;
 
-
-
-    ImageView imageView2;
     public List<SecondActivity> wdetails=new ArrayList<> ();
     ArrayList<Weatherdata> weatherList;
     public static final String IMG_URL2 = "https://openweathermap.org/img/w/";
@@ -107,7 +104,6 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
                 JSONArray ja = jo.getJSONArray ("daily");
 
                 for (int i = 1; i < ja.length (); i++) {
-
                     JSONObject daily = ja.getJSONObject (i);
 
                     JSONArray ja2 = daily.getJSONArray ("weather");

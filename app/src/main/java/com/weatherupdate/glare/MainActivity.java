@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     String sunrise_find;
     String windSpeed_find;
     String pressure_find;
+    String lat;
+    String lon;
     double lat_find;
     double lon_find;
     double lati;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView wind_speed;
 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
 
     }
-
     //location
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult (requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 if ((grantResults.length > 0)
@@ -174,14 +175,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     }
 
                 } else {
-
                 }
                 return;
             }
 
         }
     }
-
     @Override
     public void onLocationChanged(Location location) {
         lati = location.getLatitude ( );
@@ -211,16 +210,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if(sh !=null) {
             timePause2 = sh.getString ("timePause", timePause);
             dateInPause2 = Long.parseLong (timePause2);
-
-            //Log.d ("resumedate", String.valueOf (dateInResume));
-            //Log.d ("pause", String.valueOf (dateInPause2));
             long d = dateInResume - dateInPause2;
-            //Log.d ("diff", String.valueOf (d));
             if (d > 300000) {
                 Intent intent = new Intent (MainActivity.this, MainActivity.class);
                 finish ( );
                 startActivity (intent);
-                Log.d ("DDDD", "started");
             }
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -241,18 +235,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString ("timePause", timePause);
         editor.apply ();
-        //Log.d ("pausedate", String.valueOf (dateInPause));
         if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
         locationManager.removeUpdates(this);
     }
-
-
 @Override
     protected void onStop() {
         super.onStop ( );
-        Log.d("stop", "STOP");
+    Log.d("stop", "STOP");
     }
 
     @Override
@@ -269,16 +260,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
       }
        @Override
        protected String doInBackground(String... params) {
-           String lat = String.valueOf (lati);
-           String lon = String.valueOf (longi);
+           Bundle extras = getIntent().getExtras();
+           if (extras != null) {
+               lat =extras.getString ("latitude3");
+               lon =extras.getString ("longitude3");
+           }
+           else{
+            lat = String.valueOf (lati);
+            lon = String.valueOf (longi);
+           }
            String inputLine;
            StringBuilder result = new StringBuilder();
            try {
                URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
-
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
-             InputStream inputStream = httpURLConnection.getInputStream ();
+               InputStream inputStream = httpURLConnection.getInputStream ();
                    BufferedReader  bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
                while ((inputLine = bufferedReader.readLine ()) != null) {
                    result.append (inputLine);
@@ -362,10 +359,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                //add realTime clock
                date = jsonObject.getString ("dt");
                long date2 = Long.parseLong (date)*1000 ;
-               //@SuppressLint("SimpleDateFormat") SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
-               //Date dateinDate=format.parse (String.valueOf (date2));
-               //Calendar cal = Calendar.getInstance();
-               //cal.setTimeInMillis (date2[0]);
                updateTime (date2,text);
 
            } catch (JSONException  jsonException) {
@@ -380,14 +373,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 @Override
                 public void run() {
                    Calendar calender = Calendar.getInstance();
+                   //calender.setTimeInMillis (timeString);
                    int day=calender.get(Calendar.DATE);
                    int month=calender.get(Calendar.MONTH)+1;
                    int year=calender.get(Calendar.YEAR);
-                    int hour=calender.get (Calendar.HOUR_OF_DAY);
+                   int hour=calender.get (Calendar.HOUR_OF_DAY);
                    int min=calender.get (Calendar.MINUTE);
                    int sec=calender.get(Calendar.SECOND);
-                    dateTime2.setText(day+"-"+month+"-"+year+"\n"+hour+":"+min+":"+sec);
-                    timerHandler.postDelayed(updater,1000);
+                   dateTime2.setText(day+"-"+month+"-"+year+"\n"+hour+":"+min+":"+sec);
+                   timerHandler.postDelayed(updater,1000);
                 }
             };
             timerHandler.post(updater);
