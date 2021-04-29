@@ -3,15 +3,12 @@ package com.weatherupdate.glare;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,9 +16,7 @@ import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,9 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class SearchClass extends AppCompatActivity {
     protected String data2;
@@ -62,6 +54,8 @@ public class SearchClass extends AppCompatActivity {
     TextView windSpeed;
     TextView humidity;
     public static final String IMG_URL3 = "https://openweathermap.org/img/w/";
+
+    SharedPreferences mPrefs ;
 
     private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A";
     PlaceOptions placeOptions;
@@ -195,11 +189,18 @@ public class SearchClass extends AppCompatActivity {
                 //SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
                 //format.setTimeZone (TimeZone.getTimeZone ("GMT"));
                 //dateTime.setText (format.format(date));
-
+                mPrefs=getSharedPreferences("MySP", MODE_PRIVATE);
                 Intent  i = new Intent(SearchClass.this, MainActivity.class);
                 i.putExtra("latitude3",findLat);
                 i.putExtra("longitude3",findLong);
+                SharedPreferences.Editor editorS = mPrefs.edit();
+                editorS.putString("latitude3", findLat);
+                editorS.putString("longitude3",findLong);
+                editorS.commit();
                 startActivity (i);
+
+//Give any name for //preference as I have given "IDvalue" and value 0.
+
 
             }   catch (JSONException jsonException) {
                 jsonException.printStackTrace ();

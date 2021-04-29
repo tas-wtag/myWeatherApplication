@@ -10,17 +10,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,6 +24,7 @@ import androidx.core.content.ContextCompat;
 
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,16 +40,21 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+
+import static java.lang.Long.parseLong;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     public long dateInPause;
     public long dateInResume;
     public long dateInPause2;
+
     String timePause;
     String timePause2;
+
     SharedPreferences sharedPreferences;
-    SharedPreferences sharedPreferences2;
-    //location
+    SharedPreferences sh;
+
     protected LocationManager locationManager;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     String city_find;
@@ -66,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     String pressure_find;
     String lat;
     String lon;
+    String latitude3;
+    String longitude3;
+    String findTimeZone;
+
+
     double lat_find;
     double lon_find;
     double lati;
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView wind_speed;
 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
-
+    SharedPreferences mPrefs2 ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
@@ -129,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
     //location
-    public boolean checkLocationPermission() {
+    public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -138,14 +145,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 new AlertDialog.Builder (this)
                         .setTitle (R.string.title_location_permission)
                         .setMessage (R.string.text_location_permission)
-                        .setPositiveButton (R.string.ok, new DialogInterface.OnClickListener ( ) {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions (MainActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
+                        .setPositiveButton (R.string.ok, (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions (MainActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
                         })
                         .create ( )
                         .show ( );
@@ -155,32 +159,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
-            return false;
         } else {
-            return true;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
+                                           String @NotNull [] permissions, int @NotNull [] grantResults) {
         super.onRequestPermissionsResult (requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                if ((grantResults.length > 0)
-                        && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if ((grantResults.length > 0)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
-                    if (ContextCompat.checkSelfPermission (this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
-                    }
-
-                } else {
+                if (ContextCompat.checkSelfPermission (this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
                 }
-                return;
-            }
 
+            }
         }
     }
     @Override
@@ -208,16 +205,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onResume ( );
         Calendar calendar2 = Calendar.getInstance ( );
         dateInResume = (calendar2.getTimeInMillis ());
-        SharedPreferences sh = getSharedPreferences ("MySharedPref", MODE_PRIVATE);
-        if(sh !=null) {
-            timePause2 = sh.getString ("timePause", timePause);
-            dateInPause2 = Long.parseLong (timePause2);
-            long d = dateInResume - dateInPause2;
-            if (d > 300000) {
-                Intent intent = new Intent (MainActivity.this, MainActivity.class);
-                finish ( );
-                startActivity (intent);
-            }
+        mPrefs2=getSharedPreferences ("MySP", MODE_PRIVATE);
+        if(mPrefs2!=null)
+        {
+            latitude3=mPrefs2.getString ("latitude3","");
+            longitude3=mPrefs2.getString ("longitude3","");
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -245,32 +237,34 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager.removeUpdates(this);
 
     }
-@Override
+
+    @Override
     protected void onStop() {
         super.onStop ( );
-      Log.d("stop", "STOP");
     }
-
     @Override
     protected void onStart() {
         super.onStart ( );
-        Log.d("start", "START");
     }
 
-    /*  @Override
-    protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        savedInstanceState.putAll(savedInstanceState);
-        super.onSaveInstanceState (savedInstanceState);
-        Log.d("****D","saved");
+    @Override
+    protected void onRestart() {
+        super.onRestart ( );
+        sh = getSharedPreferences ("MySharedPref", MODE_PRIVATE);
+
+        if(sh !=null) {
+            timePause2 = sh.getString ("timePause", timePause);
+            dateInPause2 = parseLong (timePause2);
+            long d = dateInResume - dateInPause2;
+            if (d > 300000) {
+                Intent intent = new Intent (MainActivity.this, MainActivity.class);
+                finish ( );
+                startActivity (intent);
+            }
+        }
     }
 
-  @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState (savedInstanceState);
-        savedInstanceState.get(String.valueOf (savedInstanceState));
-        Log.d("****D","loaded");
-    }*/
-
+    @SuppressLint("StaticFieldLeak")
     private class FetchData extends AsyncTask<String, Void, String> {
       TextView text;
       public FetchData(TextView textView){
@@ -283,9 +277,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                lat =extras.getString ("latitude3");
                lon =extras.getString ("longitude3");
            }
-           else{
-            lat = String.valueOf (lati);
-            lon = String.valueOf (longi);
+           else if (!latitude3.equals ("")) {
+               if (!longitude3.equals ("")) {
+                   lat = latitude3;
+                   lon = longitude3;
+               } else {
+                   lat = String.valueOf (lati);
+                   lon = String.valueOf (longi);
+               }
+           } else {
+               lat = String.valueOf (lati);
+               lon = String.valueOf (longi);
            }
            String inputLine;
            StringBuilder result = new StringBuilder();
@@ -311,8 +313,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
        @Override
        protected void onPostExecute(String aVoid) {
            try {
-               //find country
                JSONObject jsonObject = new JSONObject (aVoid);
+               findTimeZone = jsonObject.getString ("timezone");
+
+               //find country
                JSONObject object1 = jsonObject.getJSONObject ("sys");
                country_find = object1.getString ("country");
                country.setText (country_find);
@@ -330,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
                JSONObject object3 = jsonArray.getJSONObject (0);
                img = object3.getString ("icon");
-               imageView = (ImageView) findViewById (R.id.image);
+               imageView = findViewById (R.id.image);
                Picasso.get ().load (IMG_URL + img + ".png").into (imageView);
 
                //find latitude
@@ -351,18 +355,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                //find sunrise
                JSONObject object7 = jsonObject.getJSONObject ("sys");
                sunrise_find = object7.getString ("sunrise");
-               long dv = Long.parseLong (sunrise_find) * 1000;
-               Date df = new Date (dv);
-               @SuppressLint("SimpleDateFormat") String vv = new SimpleDateFormat ("hh:mma").format (df);
-               sunrise.setText (vv);
+               int findTimeZoneInt=Integer.parseInt (findTimeZone);
+               int findSunriseInt=Integer.parseInt (sunrise_find);
+               int sunriseToShowInt=findSunriseInt+findTimeZoneInt;
+               String sunriseToShow=Integer.toString(sunriseToShowInt);
+               long sunriseLong= Long.parseLong (sunriseToShow) * 1000;
+               Date sunriseFind = new Date(sunriseLong);
+               @SuppressLint("SimpleDateFormat") SimpleDateFormat format= new SimpleDateFormat ("hh:mma");
+               format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+               sunrise.setText (format.format(sunriseFind));
 
                //find sunset
                JSONObject object8 = jsonObject.getJSONObject ("sys");
                sunset_find = object8.getString ("sunset");
-               long dv2 = Long.parseLong (sunset_find) * 1000;
-               Date df2 = new Date (dv2);
-               @SuppressLint("SimpleDateFormat") String vv2 = new SimpleDateFormat ("hh:mma").format (df2);
-               sunset.setText (vv2);
+               int findSunsetInt=Integer.parseInt (sunset_find);
+               int sunsetToShowInt=findSunsetInt+findTimeZoneInt;
+               String sunsetToShow=Integer.toString(sunsetToShowInt);
+               long sunsetLong = Long.parseLong (sunsetToShow) * 1000;
+               Date sunsetFind = new Date(sunsetLong);
+               format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+               sunset.setText (format.format(sunsetFind));
 
                //find pressure
                JSONObject object9 = jsonObject.getJSONObject ("main");
@@ -376,31 +388,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                //add realTime clock
                date = jsonObject.getString ("dt");
-               long date2 = Long.parseLong (date)*1000 ;
-               updateTime (date2,text);
+               long date2 = parseLong (date)*1000 ;
+               updateTime (text);
 
            } catch (JSONException  jsonException) {
                jsonException.printStackTrace ();
            }
        }
        Runnable updater;
-        void updateTime(final long timeString, TextView dateTime2) {
+        @SuppressLint("SetTextI18n")
+        void updateTime(TextView dateTime2) {
             final Handler timerHandler = new Handler();
-            updater = new Runnable() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void run() {
-                   Calendar calender = Calendar.getInstance();
-                   //calender.setTimeInMillis (timeString);
-                   int day=calender.get(Calendar.DATE);
-                   int month=calender.get(Calendar.MONTH)+1;
-                   int year=calender.get(Calendar.YEAR);
-                   int hour=calender.get (Calendar.HOUR_OF_DAY);
-                   int min=calender.get (Calendar.MINUTE);
-                   int sec=calender.get(Calendar.SECOND);
-                   dateTime2.setText(day+"-"+month+"-"+year+"\n"+hour+":"+min+":"+sec);
-                   timerHandler.postDelayed(updater,1000);
-                }
+            updater = () -> {
+               Calendar calender = Calendar.getInstance();
+               //calender.setTimeInMillis (timeString);
+               int day=calender.get(Calendar.DATE);
+               int month=calender.get(Calendar.MONTH)+1;
+               int year=calender.get(Calendar.YEAR);
+               int hour=calender.get (Calendar.HOUR_OF_DAY);
+               int min=calender.get (Calendar.MINUTE);
+               int sec=calender.get(Calendar.SECOND);
+               dateTime2.setText(day+"-"+month+"-"+year+getString(R.string.newLine)+hour+":"+min+":"+sec);
+               timerHandler.postDelayed(updater,1000);
             };
             timerHandler.post(updater);
         }

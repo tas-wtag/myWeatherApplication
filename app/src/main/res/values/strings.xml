@@ -6,4 +6,5 @@
     <string name="select_city">Select city</string>
     <string name="MAPBOX_ACCESS_TOKEN">pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A</string>
     <string name="mapbox_access_token" />
+    <string name="newLine">\n</string>
 </resources>
