@@ -253,8 +253,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         dateInResume = (calendar2.getTimeInMillis ());
         sh = getSharedPreferences ("MySharedPref", MODE_PRIVATE);
         if(sh!=null) {
-            String timePause2;
-            timePause2 = sh.getString ("timePause", timePause);
+            String timePause2 = sh.getString ("timePause", timePause);
+            Log.d("*************d",timePause2);
             if(timePause2!=null) {
                 dateInPause2 = parseLong (timePause2);
                 long d = dateInResume - dateInPause2;
