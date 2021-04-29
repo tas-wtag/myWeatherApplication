@@ -105,6 +105,7 @@ public class SearchClass extends AppCompatActivity {
             }
         }
     }
+    @SuppressLint("StaticFieldLeak")
     private class DataFetch extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -196,11 +197,8 @@ public class SearchClass extends AppCompatActivity {
                 SharedPreferences.Editor editorS = mPrefs.edit();
                 editorS.putString("latitude3", findLat);
                 editorS.putString("longitude3",findLong);
-                editorS.commit();
+                editorS.apply();
                 startActivity (i);
-
-//Give any name for //preference as I have given "IDvalue" and value 0.
-
 
             }   catch (JSONException jsonException) {
                 jsonException.printStackTrace ();

@@ -2,7 +2,6 @@ package com.weatherupdate.glare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +11,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public long dateInPause2;
 
     String timePause;
-    String timePause2;
+
 
     SharedPreferences sharedPreferences;
     SharedPreferences sh;
@@ -203,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onResume() {
         super.onResume ( );
-        Calendar calendar2 = Calendar.getInstance ( );
-        dateInResume = (calendar2.getTimeInMillis ());
+        Log.d("*************d","resumed");
         mPrefs2=getSharedPreferences ("MySP", MODE_PRIVATE);
         if(mPrefs2!=null)
         {
@@ -250,16 +249,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onRestart() {
         super.onRestart ( );
+        Calendar calendar2 = Calendar.getInstance ( );
+        dateInResume = (calendar2.getTimeInMillis ());
         sh = getSharedPreferences ("MySharedPref", MODE_PRIVATE);
-
-        if(sh !=null) {
+        if(sh!=null) {
+            String timePause2;
             timePause2 = sh.getString ("timePause", timePause);
-            dateInPause2 = parseLong (timePause2);
-            long d = dateInResume - dateInPause2;
-            if (d > 300000) {
-                Intent intent = new Intent (MainActivity.this, MainActivity.class);
-                finish ( );
-                startActivity (intent);
+            if(timePause2!=null) {
+                dateInPause2 = parseLong (timePause2);
+                long d = dateInResume - dateInPause2;
+                if (d > 300000) {
+                    Intent intent = new Intent (MainActivity.this, MainActivity.class);
+                    finish ( );
+                    startActivity (intent);
+                }
             }
         }
     }
