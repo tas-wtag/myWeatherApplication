@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:orientation="horizontal"
-    tools:context=".SecondActivity">
+    tools:context=".UpcomingUpdatesActivity">
 
     <ListView
         android:id="@+id/listview"

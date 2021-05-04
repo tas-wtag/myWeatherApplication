@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         next.setOnClickListener (new View.OnClickListener ( ) {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent (MainActivity.this, SecondActivity.class);
+                Intent intent = new Intent (MainActivity.this, UpcomingUpdatesActivity.class);
                 intent.putExtra ("Latitude", lat);
                 intent.putExtra ("Longitude", lon);
                 startActivity (intent);
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         searchCity.setOnClickListener (new View.OnClickListener ( ) {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent (MainActivity.this, SearchClass.class);
+                Intent intent = new Intent (MainActivity.this, SearchActivity.class);
                 startActivity (intent);
             }
         });
@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         == PackageManager.PERMISSION_GRANTED) {
                     locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
                 }
-
             }
         }
     }
@@ -234,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
         locationManager.removeUpdates(this);
-
     }
 
     @Override

@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class SecondActivity<weatherData2> extends AppCompatActivity {
+public class UpcomingUpdatesActivity extends AppCompatActivity {
 
     public ListView lv;
     public String temp2, date2;
@@ -40,7 +40,7 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
     String latitude2;
     String longitude2;
 
-    public List<SecondActivity> wdetails=new ArrayList<> ();
+    public List<UpcomingUpdatesActivity> wdetails=new ArrayList<> ();
     ArrayList<Weatherdata> weatherList;
     public static final String IMG_URL2 = "https://openweathermap.org/img/w/";
 
@@ -129,7 +129,7 @@ public class SecondActivity<weatherData2> extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace ();
             }
-            Customlist adapter = new Customlist(SecondActivity.this, weatherList);
+            Customlist adapter = new Customlist(UpcomingUpdatesActivity.this, weatherList);
             listview.setAdapter(adapter);
         }
     }

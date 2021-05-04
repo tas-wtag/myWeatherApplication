@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class SearchClass extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
     protected String data2;
     String findCity;
     String findDate;
@@ -191,7 +191,7 @@ public class SearchClass extends AppCompatActivity {
                 //format.setTimeZone (TimeZone.getTimeZone ("GMT"));
                 //dateTime.setText (format.format(date));
                 mPrefs=getSharedPreferences("MySP", MODE_PRIVATE);
-                Intent  i = new Intent(SearchClass.this, MainActivity.class);
+                Intent  i = new Intent(SearchActivity.this, MainActivity.class);
                 i.putExtra("latitude3",findLat);
                 i.putExtra("longitude3",findLong);
                 SharedPreferences.Editor editorS = mPrefs.edit();

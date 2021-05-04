@@ -24,8 +24,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyWeather2"
         tools:targetApi="n">
-        <activity android:name="com.weatherupdate.glare.SecondActivity" />
-        <activity android:name="com.weatherupdate.glare.SearchClass" />
+        <activity android:name="com.weatherupdate.glare.UpcomingUpdatesActivity"
+           />
+        <activity android:name="com.weatherupdate.glare.SearchActivity"
+            />
         <activity android:name="com.weatherupdate.glare.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
