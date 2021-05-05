@@ -12,6 +12,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -79,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     double longi;
     int hum_find;
 
-    Button searchCity;
-    Button next;
     ImageView imageView;
     TextView country, city, temp, dateTime;
     TextView latitude1;
@@ -94,14 +95,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public static final String IMG_URL = "https://openweathermap.org/img/w/";
     SharedPreferences mPrefs2 ;
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.main_activity_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent (MainActivity.this, SearchActivity.class);
+                startActivity (intent);
+
+                return true;
+
+            case R.id.action_upcoming:
+                Intent intent2 = new Intent (MainActivity.this, UpcomingUpdatesActivity.class);
+                intent2.putExtra ("Latitude", lat);
+                intent2.putExtra ("Longitude", lon);
+                startActivity (intent2);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
         checkLocationPermission ( );
-
-        next = findViewById (R.id.next);
-        searchCity = findViewById (R.id.search);
-
+        
         country = findViewById (R.id.cityName);
         city = findViewById (R.id.city);
         temp = findViewById (R.id.temperature);
@@ -115,25 +141,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         pressure = findViewById (R.id.pressure3);
         wind_speed = findViewById (R.id.windSpeed3);
         locationManager = (LocationManager) getApplicationContext ( ).getSystemService (LOCATION_SERVICE);
-
-        next.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (MainActivity.this, UpcomingUpdatesActivity.class);
-                intent.putExtra ("Latitude", lat);
-                intent.putExtra ("Longitude", lon);
-                startActivity (intent);
-            }
-        });
-
-        searchCity.setOnClickListener (new View.OnClickListener ( ) {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (MainActivity.this, SearchActivity.class);
-                startActivity (intent);
-            }
-        });
-
     }
     //location
     public void checkLocationPermission() {

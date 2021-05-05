@@ -22,7 +22,6 @@
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText,MissingConstraints">
@@ -67,15 +66,15 @@
 
         <TextView
             android:id="@+id/temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="108dp"
+            android:layout_height="102dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="15dp"
             android:text=" °C"
             android:textColor="#F1EEEE"
-            android:textSize="65sp"
+            android:textSize="70sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image"
@@ -94,56 +93,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cityName" />
 
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="108dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:text="Next"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.993"
-            app:layout_constraintStart_toEndOf="@+id/temperature"
-            app:layout_constraintTop_toBottomOf="@+id/image"
-            app:rippleColor="#FFFFFF" />
-
-        <TextView
-            android:id="@+id/tv_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_run"
-            android:layout_centerHorizontal="true"
-            android:textSize="7pt"
-            tools:ignore="ExtraText,UnknownId" />
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="250dp"
-            android:layout_marginLeft="250dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="29dp"
-            android:text="Search City"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next"
-            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -153,13 +102,16 @@
         android:layout_height="254dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
         android:background="#8C0B0A0A"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/textView10"
