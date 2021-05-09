@@ -99,7 +99,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 
-           try {
+            try {
                 JSONObject jo = new JSONObject (s);
                 JSONArray ja = jo.getJSONArray ("daily");
 
@@ -134,4 +134,3 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
         }
     }
 }
-

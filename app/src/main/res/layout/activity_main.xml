@@ -7,10 +7,13 @@
     android:background="@drawable/bg"
     android:freezesText="true"
     tools:context=".MainActivity">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="388dp"
-        android:layout_height="478dp"
+        android:layout_width="386dp"
+        android:layout_height="451dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
@@ -18,10 +21,11 @@
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText,MissingConstraints">
+
         <TextView
             android:id="@+id/cityName"
             android:layout_width="71dp"
@@ -48,6 +52,7 @@
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/cityName"
             app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/image"
             android:layout_width="112dp"
@@ -90,22 +95,21 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="403dp"
-        android:layout_height="254dp"
+        android:layout_width="394dp"
+        android:layout_height="263dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <TextView
             android:id="@+id/textView10"
