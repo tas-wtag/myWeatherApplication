@@ -5,52 +5,23 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg"
+    android:freezesText="true"
     tools:context=".MainActivity">
-
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#072557"
-        android:gravity="center"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:text="Weather App"
-        android:textColor="#F8F5F5"
-        android:textSize="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="396dp"
-        android:layout_height="386dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="6dp"
+        android:layout_width="388dp"
+        android:layout_height="478dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="5dp"
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText,MissingConstraints">
-
-        <TextView
-            android:id="@+id/sec"
-            android:layout_width="34dp"
-            android:layout_height="22dp"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="84dp"
-            tools:layout_editor_absoluteY="97dp" />
-
         <TextView
             android:id="@+id/cityName"
             android:layout_width="71dp"
@@ -65,7 +36,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <TextView
             android:id="@+id/city"
             android:layout_width="wrap_content"
@@ -78,7 +48,6 @@
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/cityName"
             app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/image"
             android:layout_width="112dp"
@@ -100,11 +69,11 @@
             android:layout_marginBottom="15dp"
             android:text=" °C"
             android:textColor="#F1EEEE"
-            android:textSize="65sp"
+            android:textSize="70sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image"
-            app:layout_constraintVertical_bias="0.68" />
+            app:layout_constraintVertical_bias="0.539" />
 
         <TextView
             android:id="@+id/dateTime2"
@@ -119,75 +88,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cityName" />
 
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginTop="108dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:text="Next"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.993"
-            app:layout_constraintStart_toEndOf="@+id/temperature"
-            app:layout_constraintTop_toBottomOf="@+id/image"
-            app:rippleColor="#FFFFFF" />
-
-        <TextView
-            android:id="@+id/tv_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btn_run"
-            android:layout_centerHorizontal="true"
-            android:textSize="7pt"
-            tools:ignore="ExtraText,UnknownId" />
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="250dp"
-            android:layout_marginLeft="250dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="29dp"
-            android:text="Search City"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/next"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/hour"
-            android:layout_width="34dp"
-            android:layout_height="22dp"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="97dp" />
-
-        <TextView
-            android:id="@+id/min"
-            android:layout_width="34dp"
-            android:layout_height="22dp"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="50dp"
-            tools:layout_editor_absoluteY="97dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="403dp"
@@ -197,10 +99,10 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp"
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:layout_constraintVertical_bias="0.0">

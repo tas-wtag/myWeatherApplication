@@ -39,7 +39,6 @@ public class Customlist extends ArrayAdapter<Weatherdata> {
         TextView rain = (TextView) convertView.findViewById(R.id.rain);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView2);
 
-
         Weatherdata temperature=getItem (position);
         temp2.setText (temperature.getTemp2 ());
         rain.setText (temperature.getRain2 ());

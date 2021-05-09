@@ -7,14 +7,10 @@
     android:background="@drawable/bg"
     android:freezesText="true"
     tools:context=".MainActivity">
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="396dp"
-        android:layout_height="460dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
+        android:layout_width="388dp"
+        android:layout_height="478dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
@@ -22,10 +18,10 @@
         android:background="#8C0B0A0A"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ExtraText,MissingConstraints">
-
         <TextView
             android:id="@+id/cityName"
             android:layout_width="71dp"
@@ -52,7 +48,6 @@
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/cityName"
             app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/image"
             android:layout_width="112dp"
@@ -66,8 +61,8 @@
 
         <TextView
             android:id="@+id/temperature"
-            android:layout_width="108dp"
-            android:layout_height="102dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="20dp"
@@ -95,7 +90,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="403dp"
