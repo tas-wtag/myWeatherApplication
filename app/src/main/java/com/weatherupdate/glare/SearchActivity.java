@@ -30,18 +30,10 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 public class SearchActivity extends AppCompatActivity {
-    protected String data2;
+
+    Variables findLat=new Variables ();
+    Variables findLong=new Variables ();
     String findCity;
-    String findDate;
-    String findSituation;
-    String findImage;
-    String findTemp;
-    String findTimeZone;
-    String findLat;
-    String findLong;
-    String findHum;
-    String findWS;
-    String findPressure;
 
     TextView cityName;
     TextView dateTime;
@@ -60,6 +52,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A";
     PlaceOptions placeOptions;
     private static final  int REQUEST_CODE_AUTOCOMPLETE=1;
+    private String data2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,12 +83,11 @@ public class SearchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
             if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
-            data2=feature.toJson();
+            data2 = feature.toJson ( );
 
             try{
             JSONObject jsonObject = new JSONObject (data2);
-            findCity= jsonObject.getString ("text");
-            //cityName.setText (findCity);
+            findCity=jsonObject.getString ("text");
 
             DataFetch process = new DataFetch ();
             process.execute ();
@@ -135,68 +127,19 @@ public class SearchActivity extends AppCompatActivity {
         protected void onPostExecute(String aVoid) {
             try {
                 JSONObject jsonObject = new JSONObject (aVoid);
-
-                //find temp
-                //JSONObject object2 = jsonObject.getJSONObject ("main");
-                //findTemp= object2.getString ("temp");
-                //temp.setText (findTemp + " °C ");
-
-                //find image icon
-                //JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-                //JSONObject object3 = jsonArray.getJSONObject (0);
-                //findImage = object3.getString ("icon");
-                //Picasso.get ().load (IMG_URL3 + findImage + ".png").into (image);
-
-                //find situation
-                //JSONArray object4 = jsonObject.getJSONArray ("weather");
-                //JSONObject  m= object4.getJSONObject (0);
-                //findSituation = m.getString ("main");
-                //situation.setText(findSituation);
-
-                //find latitude
                 JSONObject object7 = jsonObject.getJSONObject ("coord");
-                findLat = object7.getString ("lat");
-                //latitude.setText ("Latitude          "+findLat + "°  N ");
+                findLat.setFindLat (object7.getString ("lat"));
 
-                //find longitude
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
-                findLong = object5.getString ("lon");
-                //longitude.setText ("Longitude      "+findLong + "°  E ");
+                findLong.setFindLong (object5.getString ("lon"));
 
-                //find humidity
-                //JSONObject object6 = jsonObject.getJSONObject ("main");
-                //findHum = object6.getString ("humidity");
-               // humidity.setText ("Humidity        "+findHum + " %");
-
-                //find pressure
-                //JSONObject object9 = jsonObject.getJSONObject ("main");
-                //findPressure = object9.getString ("pressure");
-                //pressure.setText ("Pressure        "+findPressure + "  hPa");
-
-                //find windSpeed
-                //JSONObject object10 = jsonObject.getJSONObject ("wind");
-                //findWS = object10.getString ("speed");
-                //windSpeed.setText ("Wind Speed   "+findWS + "  km/h");
-
-                //findDate
-                //findDate = jsonObject.getString ("dt");
-                //findTimeZone=jsonObject.getString ("timezone");
-                //int findDateInt=Integer.parseInt (findDate);
-                //int findTimeZoneInt=Integer.parseInt (findTimeZone);
-                //int dateToShowInt=findDateInt+findTimeZoneInt;
-                //String dateToShow=Integer.toString(dateToShowInt);
-                //long dateTimeLong = Long.parseLong (dateToShow) * 1000;
-                //Date date = new Date(dateTimeLong);
-                //SimpleDateFormat format=new SimpleDateFormat ( "dd-MM-yyyy\nHH:mm:ssa " );
-                //format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-                //dateTime.setText (format.format(date));
                 mPrefs=getSharedPreferences("MySP", MODE_PRIVATE);
                 Intent  i = new Intent(SearchActivity.this, MainActivity.class);
-                i.putExtra("latitude3",findLat);
-                i.putExtra("longitude3",findLong);
+                i.putExtra("latitude3",findLat.getFindLat ());
+                i.putExtra("longitude3",findLong.getFindLong ());
                 SharedPreferences.Editor editorS = mPrefs.edit();
-                editorS.putString("latitude3", findLat);
-                editorS.putString("longitude3",findLong);
+                editorS.putString("latitude3", findLat.getFindLat ());
+                editorS.putString("longitude3",findLong.getFindLong ());
                 editorS.apply();
                 startActivity (i);
 

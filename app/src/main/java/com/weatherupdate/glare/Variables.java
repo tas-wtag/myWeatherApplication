@@ -11,9 +11,32 @@ public class Variables extends Application {
     private String sunrise_find;
     private String windSpeed_find;
     private String pressure_find;
-
     private double lati;
     private double longi;
+
+
+
+    private String findLat;
+    private String findLong;
+
+
+    public String getFindLat() {
+        return findLat;
+    }
+
+    public void setFindLat(String findLat) {
+        this.findLat = findLat;
+    }
+
+    public String getFindLong() {
+        return findLong;
+    }
+
+    public void setFindLong(String findLong) {
+        this.findLong = findLong;
+    }
+
+
 
     public long getDateInPause() {
         return dateInPause;

@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         .setTitle (R.string.title_location_permission)
                         .setMessage (R.string.text_location_permission)
                         .setPositiveButton (R.string.ok, (dialogInterface, i) -> {
-                            //Prompt the user once explanation has been shown
                             ActivityCompat.requestPermissions (MainActivity.this,
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                     MY_PERMISSIONS_REQUEST_LOCATION);
@@ -178,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
-        } else {
         }
     }
 
@@ -224,8 +222,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mPrefs2=getSharedPreferences ("MySP", MODE_PRIVATE);
         if(mPrefs2!=null)
         {
-            //latitude3.setLatitude3 (mPrefs2.getString ("latitude3",""));
-            //longitude3.setLongitude3 (mPrefs2.getString ("longitude3",""));
             latitude3=mPrefs2.getString ("latitude3","");
             longitude3=mPrefs2.getString ("longitude3","");
         }
@@ -236,8 +232,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
         locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
-
-
     }
     @Override
     protected void onPause() {
@@ -422,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             final Handler timerHandler = new Handler();
             updater = () -> {
                Calendar calender = Calendar.getInstance();
-               //calender.setTimeInMillis (Long.parseLong (date2));
                int day=calender.get(Calendar.DATE);
                int month=calender.get(Calendar.MONTH)+1;
                int year=calender.get(Calendar.YEAR);
