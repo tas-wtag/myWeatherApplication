@@ -2,6 +2,11 @@ package com.weatherupdate.glare;
 
 import android.app.Application;
 
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Variables extends Application {
     private String country_find;
     private String temp_find;
@@ -13,12 +18,17 @@ public class Variables extends Application {
     private String pressure_find;
     private double lati;
     private double longi;
-
-
+    private double lat_find;
+    private double lon_find;
+    private int hum_find;
 
     private String findLat;
     private String findLong;
 
+
+    public long dateInPause;
+    public long dateInResume;
+    public long dateInPause2;
 
     public String getFindLat() {
         return findLat;
@@ -62,9 +72,7 @@ public class Variables extends Application {
         this.dateInPause2 = dateInPause2;
     }
 
-    public long dateInPause;
-    public long dateInResume;
-    public long dateInPause2;
+
 
     private String findTimeZone;
     private long date2;
@@ -143,37 +151,6 @@ public class Variables extends Application {
         this.pressure_find = pressure_find;
     }
 
-  /*  public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLon() {
-        return lon;
-    }
-
-    public void setLon(String lon) {
-        this.lon = lon;
-    }*/
-
-   /* public String getLatitude3() {
-        return latitude3;
-    }
-
-    public void setLatitude3(String latitude3) {
-        this.latitude3 = latitude3;
-    }
-
-    public String getLongitude3() {
-        return longitude3;
-    }
-
-    public void setLongitude3(String longitude3) {
-        this.longitude3 = longitude3;
-    }*/
 
     public String getFindTimeZone() {
         return findTimeZone;
@@ -231,9 +208,6 @@ public class Variables extends Application {
         this.hum_find = hum_find;
     }
 
-    private double lat_find;
-    private double lon_find;
 
-    private int hum_find;
 
 }

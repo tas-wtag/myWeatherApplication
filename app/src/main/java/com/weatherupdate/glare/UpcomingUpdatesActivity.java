@@ -42,13 +42,12 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
 
     public List<UpcomingUpdatesActivity> wdetails=new ArrayList<> ();
     ArrayList<Weatherdata> weatherList;
-    public static final String IMG_URL2 = "https://openweathermap.org/img/w/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_second);
-        //MainActivity.checkLocationPermission();
 
         weatherList = new ArrayList<> ();
         lv =(ListView) findViewById (R.id.listView);
@@ -121,7 +120,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
                     JSONArray ja3 = daily.getJSONArray ("weather");
                     JSONObject icon = ja3.getJSONObject (0);
                     img2 = icon.getString ("icon");
-                    img3=IMG_URL2 + img2 + ".png";
+                    img3=StaticVars.IMG_URL2 + img2 + ".png";
 
                     Weatherdata weatherdata=new Weatherdata (temp2, rain2,img3,vv);
                     weatherList.add(weatherdata);

@@ -33,6 +33,7 @@ public class SearchActivity extends AppCompatActivity {
 
     Variables findLat=new Variables ();
     Variables findLong=new Variables ();
+    StaticVars MAPBOX_ACCESS_TOKEN=new StaticVars ();
     String findCity;
 
     TextView cityName;
@@ -45,13 +46,8 @@ public class SearchActivity extends AppCompatActivity {
     TextView pressure;
     TextView windSpeed;
     TextView humidity;
-    public static final String IMG_URL3 = "https://openweathermap.org/img/w/";
 
-    SharedPreferences mPrefs ;
 
-    private static final String MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoidGFzZmlhc2V1dGkiLCJhIjoiY2tubzd1b3U5MTVjMzJvbW9ybm5laGU4bSJ9.3XIBkPnAK9juMzlx-Rar9A";
-    PlaceOptions placeOptions;
-    private static final  int REQUEST_CODE_AUTOCOMPLETE=1;
     private String data2;
 
     @Override
@@ -72,16 +68,17 @@ public class SearchActivity extends AppCompatActivity {
         windSpeed = findViewById (R.id.windSpeed3);
 
         Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
-        Intent intent = new PlaceAutocomplete.IntentBuilder ( )
-                .accessToken (MAPBOX_ACCESS_TOKEN)
-                .placeOptions (placeOptions)
+        Intent intent;
+        intent = new PlaceAutocomplete.IntentBuilder ( )
+                .accessToken (StaticVars.getMapboxAccessToken ())
+                .placeOptions (StaticVars.placeOptions)
                 .build (this);
-        startActivityForResult (intent, REQUEST_CODE_AUTOCOMPLETE);
+        startActivityForResult (intent, StaticVars.REQUEST_CODE_AUTOCOMPLETE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == Activity.RESULT_OK && requestCode == StaticVars.REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
             data2 = feature.toJson ( );
 
@@ -98,7 +95,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
     @SuppressLint("StaticFieldLeak")
-    private class DataFetch extends AsyncTask<String, Void, String> {
+    class DataFetch extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             String inputLine2;
@@ -133,14 +130,12 @@ public class SearchActivity extends AppCompatActivity {
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
                 findLong.setFindLong (object5.getString ("lon"));
 
-                mPrefs=getSharedPreferences("MySP", MODE_PRIVATE);
                 Intent  i = new Intent(SearchActivity.this, MainActivity.class);
                 i.putExtra("latitude3",findLat.getFindLat ());
                 i.putExtra("longitude3",findLong.getFindLong ());
-                SharedPreferences.Editor editorS = mPrefs.edit();
-                editorS.putString("latitude3", findLat.getFindLat ());
-                editorS.putString("longitude3",findLong.getFindLong ());
-                editorS.apply();
+                SharedPrefManager sPref=new SharedPrefManager (this);
+                sPref.setSearchActivity ("latitude3", findLat.getFindLat ());
+                sPref.setSearchActivity ("longitude3", findLong.getFindLong ());
                 startActivity (i);
 
             }   catch (JSONException jsonException) {
