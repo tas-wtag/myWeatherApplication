@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView sunset;
     TextView wind_speed;
 
-    SharedPrefManager sharedPrefManager=new SharedPrefManager (this);
-    SharedPrefManager sharedPrefManager2=new SharedPrefManager (this);
-    SharedPrefManager sharedPrefManager3=new SharedPrefManager (this);
     protected LocationManager locationManager;
 
 
@@ -213,11 +210,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onResume() {
         super.onResume ( );
-         sharedPrefManager.getSearchActivity ("MySP");
-        if(sharedPrefManager.getSearchActivity ("MySP")!=null)
+         SharedPrefManager.getSearchActivity ("MySP");
+        if(SharedPrefManager.getSearchActivity ("MySP")!=null)
         {
-            latitude3=sharedPrefManager2.getSearchActivity ("latitude3");
-            longitude3=sharedPrefManager2.getSearchActivity ("longitude3");
+            latitude3= SharedPrefManager.getSearchActivity ("latitude3");
+            longitude3= SharedPrefManager.getSearchActivity ("longitude3");
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -234,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         dateInPause.setDateInPause ((calendar.getTimeInMillis ()));
         timePause.setTimePause (Long.toString (dateInPause.getDateInPause ()));
 
-        sharedPrefManager.setPauseTime ("timePause", timePause.getTimePause ());
+        SharedPrefManager.setPauseTime ("timePause", timePause.getTimePause ());
         if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
@@ -255,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onRestart ( );
         Calendar calendar2 = Calendar.getInstance ( );
         dateInResume.setDateInResume ((calendar2.getTimeInMillis ()));
-        sharedPrefManager3.getPauseTime ("MySharedPref", timePause.getTimePause ()) ;
+        SharedPrefManager.getPauseTime ("MySharedPref", timePause.getTimePause ()) ;
         if(SharedPrefManager.getPauseTime ("MySharedPref", timePause.getTimePause ()) !=null) {
-            String timePause2 = sharedPrefManager3.getPauseTime ("timePause", timePause.getTimePause ());
+            String timePause2 = SharedPrefManager.getPauseTime ("timePause", timePause.getTimePause ());
             if(timePause2!=null) {
                 dateInPause2.setDateInPause2 (parseLong (timePause2));
                 long d = dateInResume.getDateInResume () - dateInPause2.getDateInPause2 ();
