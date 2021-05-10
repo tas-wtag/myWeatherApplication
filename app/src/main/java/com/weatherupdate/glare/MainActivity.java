@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
      Variables hum_find=new Variables ();
      Variables dateInPause=new Variables ();
      Variables dateInResume=new Variables ();
-     Variables dateInPause2=new Variables ();
+    Variables dateInPause2=new Variables ();
 
     ImageView imageView;
     TextView country, city, temp, dateTime;
@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView sunset;
     TextView wind_speed;
 
+    SharedPrefManager sharedPrefManager=new SharedPrefManager (this);
+    SharedPrefManager sharedPrefManager2=new SharedPrefManager (this);
+    SharedPrefManager sharedPrefManager3=new SharedPrefManager (this);
     protected LocationManager locationManager;
 
 
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         wind_speed = findViewById (R.id.windSpeed3);
         locationManager = (LocationManager) getApplicationContext ( ).getSystemService (LOCATION_SERVICE);
     }
-
+    //location
     public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -210,11 +213,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onResume() {
         super.onResume ( );
-         SharedPrefManager.getSearchActivity ("MySP");
-        if(SharedPrefManager.getSearchActivity ("MySP")!=null)
+         sharedPrefManager.getSearchActivity ("MySP");
+        if(sharedPrefManager.getSearchActivity ("MySP")!=null)
         {
-            latitude3= SharedPrefManager.getSearchActivity ("latitude3");
-            longitude3= SharedPrefManager.getSearchActivity ("longitude3");
+            latitude3=sharedPrefManager2.getSearchActivity ("latitude3");
+            longitude3=sharedPrefManager2.getSearchActivity ("longitude3");
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -231,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         dateInPause.setDateInPause ((calendar.getTimeInMillis ()));
         timePause.setTimePause (Long.toString (dateInPause.getDateInPause ()));
 
-        SharedPrefManager.setPauseTime ("timePause", timePause.getTimePause ());
+        sharedPrefManager.setPauseTime ("timePause", timePause.getTimePause ());
         if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
@@ -252,9 +255,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onRestart ( );
         Calendar calendar2 = Calendar.getInstance ( );
         dateInResume.setDateInResume ((calendar2.getTimeInMillis ()));
-        SharedPrefManager.getPauseTime ("MySharedPref", timePause.getTimePause ()) ;
-        if(SharedPrefManager.getPauseTime ("MySharedPref", timePause.getTimePause ()) !=null) {
-            String timePause2 = SharedPrefManager.getPauseTime ("timePause", timePause.getTimePause ());
+        sharedPrefManager3.getPauseTime ("MySharedPref", timePause.getTimePause ()) ;
+        if(sharedPrefManager3.getPauseTime ("MySharedPref", timePause.getTimePause ()) !=null) {
+            String timePause2 = sharedPrefManager3.getPauseTime ("timePause", timePause.getTimePause ());
             if(timePause2!=null) {
                 dateInPause2.setDateInPause2 (parseLong (timePause2));
                 long d = dateInResume.getDateInResume () - dateInPause2.getDateInPause2 ();

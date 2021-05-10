@@ -40,6 +40,6 @@ public class SharedPrefManager {
     }
     public static String getSearchActivity(String key) {
         SharedPreferences sPrefs = context.getSharedPreferences("MySP", 0);
-        return sPrefs.getString(key,"DNF");
+        return sPrefs.getString(key,"");
     }
 }

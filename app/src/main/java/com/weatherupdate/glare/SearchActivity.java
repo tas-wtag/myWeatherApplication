@@ -133,8 +133,9 @@ public class SearchActivity extends AppCompatActivity {
                 Intent  i = new Intent(SearchActivity.this, MainActivity.class);
                 i.putExtra("latitude3",findLat.getFindLat ());
                 i.putExtra("longitude3",findLong.getFindLong ());
-                SharedPrefManager.setSearchActivity ("latitude3", findLat.getFindLat ());
-                SharedPrefManager.setSearchActivity ("longitude3", findLong.getFindLong ());
+                SharedPrefManager sPref=new SharedPrefManager (this);
+                sPref.setSearchActivity ("latitude3", findLat.getFindLat ());
+                sPref.setSearchActivity ("longitude3", findLong.getFindLong ());
                 startActivity (i);
 
             }   catch (JSONException jsonException) {
