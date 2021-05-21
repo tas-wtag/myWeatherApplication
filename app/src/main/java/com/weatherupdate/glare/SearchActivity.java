@@ -64,15 +64,15 @@ public class SearchActivity extends AppCompatActivity {
         Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
         Intent intent;
         intent = new PlaceAutocomplete.IntentBuilder ( )
-                .accessToken (StaticVars.getMapboxAccessToken ())
-                .placeOptions (StaticVars.placeOptions)
+                .accessToken (ConstantData.getMapboxAccessToken ())
+                .placeOptions (ConstantData.placeOptions)
                 .build (this);
-        startActivityForResult (intent, StaticVars.REQUEST_CODE_AUTOCOMPLETE);
+        startActivityForResult (intent, ConstantData.REQUEST_CODE_AUTOCOMPLETE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK && requestCode == StaticVars.REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == Activity.RESULT_OK && requestCode == ConstantData.REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
                 String data1 = feature.toJson ( );
 

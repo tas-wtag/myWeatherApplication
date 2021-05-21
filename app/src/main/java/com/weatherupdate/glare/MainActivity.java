@@ -148,14 +148,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         .setPositiveButton (R.string.ok, (dialogInterface, i) -> {
                             ActivityCompat.requestPermissions (MainActivity.this,
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    StaticVars.MY_PERMISSIONS_REQUEST_LOCATION);
+                                    ConstantData.MY_PERMISSIONS_REQUEST_LOCATION);
                         })
                         .create ( )
                         .show ( );
             } else {
                 ActivityCompat.requestPermissions (this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        StaticVars.MY_PERMISSIONS_REQUEST_LOCATION);
+                        ConstantData.MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onRequestPermissionsResult(int requestCode,
                                            String @NotNull [] permissions, int @NotNull [] grantResults) {
         super.onRequestPermissionsResult (requestCode, permissions, grantResults);
-        if (requestCode == StaticVars.MY_PERMISSIONS_REQUEST_LOCATION) {
+        if (requestCode == ConstantData.MY_PERMISSIONS_REQUEST_LOCATION) {
             if ((grantResults.length > 0)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
@@ -262,10 +262,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         int findTimeZoneInt=Integer.parseInt (weatherData.getFindTimeZone ());
 
         country.setText (weatherData.getCountry ());
-        city.setText (StaticVars.city_find);
+        city.setText (ConstantData.city_find);
 
 
-        Picasso.get ().load (StaticVars.IMG_URL + weatherData.getImg () + ".png").into (imageView);
+        Picasso.get ().load (ConstantData.IMG_URL + weatherData.getImg () + ".png").into (imageView);
 
         latitude.setText (weatherData.getLatitude () + "°  N ");
         longitude.setText (weatherData.getLongitude () + "°  E ");
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                JSONObject object1 = jsonObject.getJSONObject ("sys");
                weatherData.setCountry (object1.getString ("country"));
-               StaticVars.city_find = jsonObject.getString ("name");
+               ConstantData.city_find = jsonObject.getString ("name");
 
                JSONObject object2 = jsonObject.getJSONObject ("main");
                weatherData.setTemprature (object2.getString ("temp"));

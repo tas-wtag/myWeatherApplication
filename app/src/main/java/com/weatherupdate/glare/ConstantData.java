@@ -2,7 +2,7 @@ package com.weatherupdate.glare;
 
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
-public class StaticVars {
+public class ConstantData {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     public static String city_find;

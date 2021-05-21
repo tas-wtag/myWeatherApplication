@@ -111,7 +111,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
                     JSONArray ja3 = daily.getJSONArray ("weather");
                     JSONObject icon = ja3.getJSONObject (0);
                     img2 = icon.getString ("icon");
-                    img3=StaticVars.IMG_URL2 + img2 + ".png";
+                    img3= ConstantData.IMG_URL2 + img2 + ".png";
 
                     Weatherdata weatherdata=new Weatherdata (temp2, rain2,img3,vv);
                     weatherList.add(weatherdata);
