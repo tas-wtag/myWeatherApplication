@@ -3,7 +3,6 @@ package com.weatherupdate.glare;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,7 +12,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,34 +49,23 @@ import static java.lang.Long.parseLong;
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
 
-     String latitude3;
-     String longitude3;
-     String lat;
-     String lon;
-     Variables country_find=new Variables ();
-     Variables temp_find=new Variables ();
-     Variables img=new Variables ();
-     Variables date=new Variables ();
-     Variables sunset_find=new Variables ();
-     Variables sunrise_find=new Variables ();
-     Variables windSpeed_find=new Variables ();
-     Variables pressure_find=new Variables ();
-     Variables findTimeZone=new Variables ();
-     Variables date2=new Variables ();
-     Variables timePause=new Variables ();
-     Variables lat_find=new Variables ();
-     Variables lon_find=new Variables ();
-     Variables lati=new Variables ();
-     Variables longi=new Variables ();
-     Variables hum_find=new Variables ();
-     Variables dateInPause=new Variables ();
-     Variables dateInResume=new Variables ();
-    Variables dateInPause2=new Variables ();
+     String latitudeOfSearchActivity;
+     String longitudeOfSearchactivity;
+     String latitudeOfCurrentLocation;
+     String longitudeOfCurrentLocation;
+     MyWeatherData weatherData=new MyWeatherData ();
+
+
+
+    private String timePause;
+    public long dateInPause;
+    public long dateInResume;
+    public long dateInPause2;
 
     ImageView imageView;
     TextView country, city, temp, dateTime;
-    TextView latitude1;
-    TextView longitude1;
+    TextView latitude;
+    TextView longitude;
     TextView pressure;
     TextView humidity;
     TextView sunrise;
@@ -112,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             case R.id.action_upcoming:
                 Intent intent2 = new Intent (MainActivity.this, UpcomingUpdatesActivity.class);
-                intent2.putExtra ("Latitude",lat);
-                intent2.putExtra ("Longitude",lon);
+                intent2.putExtra ("Latitude", latitudeOfCurrentLocation);
+                intent2.putExtra ("Longitude", longitudeOfCurrentLocation);
                 startActivity (intent2);
                 return true;
 
@@ -139,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         city = findViewById (R.id.city);
         temp = findViewById (R.id.temperature);
         dateTime = findViewById (R.id.dateTime2);
-
-        latitude1 = findViewById (R.id.latitude3);
-        longitude1 = findViewById (R.id.longitude3);
+        imageView = findViewById (R.id.image);
+        latitude = findViewById (R.id.latitude3);
+        longitude = findViewById (R.id.longitude3);
         humidity = findViewById (R.id.Humidity3);
         sunrise = findViewById (R.id.Sunrise);
         sunset = findViewById (R.id.Sunset);
@@ -192,8 +179,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
     @Override
     public void onLocationChanged(Location location) {
-        lati.setLati ((location.getLatitude ( )));
-        longi.setLongi ((location.getLongitude ( )));
+        weatherData.setLatitudeCurrentLocation ((location.getLatitude ( )));
+        weatherData.setLongitudecurrentLocation ((location.getLongitude ( )));
         FetchData process = new FetchData (dateTime);
         process.execute ( );
     }
@@ -216,8 +203,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
          sharedPrefManager.getSearchActivity ("MySP");
         if(sharedPrefManager.getSearchActivity ("MySP")!=null)
         {
-            latitude3=sharedPrefManager2.getSearchActivity ("latitude3");
-            longitude3=sharedPrefManager2.getSearchActivity ("longitude3");
+            latitudeOfSearchActivity =sharedPrefManager2.getSearchActivity ("latitude3");
+            longitudeOfSearchactivity =sharedPrefManager2.getSearchActivity ("longitude3");
         }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -231,10 +218,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onPause() {
         super.onPause();
         Calendar calendar = Calendar.getInstance ();
-        dateInPause.setDateInPause ((calendar.getTimeInMillis ()));
-        timePause.setTimePause (Long.toString (dateInPause.getDateInPause ()));
+        dateInPause=calendar.getTimeInMillis ();
+        timePause=Long.toString (dateInPause);
 
-        sharedPrefManager.setPauseTime ("timePause", timePause.getTimePause ());
+        sharedPrefManager.setPauseTime ("timePause", timePause);
         if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
         }
@@ -254,13 +241,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onRestart() {
         super.onRestart ( );
         Calendar calendar2 = Calendar.getInstance ( );
-        dateInResume.setDateInResume ((calendar2.getTimeInMillis ()));
-        sharedPrefManager3.getPauseTime ("MySharedPref", timePause.getTimePause ()) ;
-        if(sharedPrefManager3.getPauseTime ("MySharedPref", timePause.getTimePause ()) !=null) {
-            String timePause2 = sharedPrefManager3.getPauseTime ("timePause", timePause.getTimePause ());
+        dateInResume=calendar2.getTimeInMillis ();
+        SharedPrefManager.getPauseTime ("MySharedPref", timePause) ;
+        if(SharedPrefManager.getPauseTime ("MySharedPref", timePause) !=null) {
+            String timePause2 = SharedPrefManager.getPauseTime ("timePause", timePause);
             if(timePause2!=null) {
-                dateInPause2.setDateInPause2 (parseLong (timePause2));
-                long d = dateInResume.getDateInResume () - dateInPause2.getDateInPause2 ();
+                dateInPause2=parseLong (timePause2);
+                long d = dateInResume- dateInPause2;
                 if (d > 300000) {
                     Intent intent = new Intent (MainActivity.this, MainActivity.class);
                     finish ( );
@@ -268,6 +255,44 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 }
             }
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void updateUI (MyWeatherData wd){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format= new SimpleDateFormat ("hh:mma");
+        int findTimeZoneInt=Integer.parseInt (weatherData.getFindTimeZone ());
+
+        country.setText (weatherData.getCountry ());
+        city.setText (StaticVars.city_find);
+
+
+        Picasso.get ().load (StaticVars.IMG_URL + weatherData.getImg () + ".png").into (imageView);
+
+        latitude.setText (weatherData.getLatitude () + "°  N ");
+        longitude.setText (weatherData.getLongitude () + "°  E ");
+        humidity.setText (weatherData.getHumidity () + " %");
+
+
+        int findSunriseInt=Integer.parseInt (weatherData.getSunrise ());
+        int sunriseToShowInt=findSunriseInt+findTimeZoneInt;
+        String sunriseToShow=Integer.toString(sunriseToShowInt);
+        long sunriseLong= Long.parseLong (sunriseToShow) * 1000;
+        Date sunriseFind = new Date(sunriseLong);
+        format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+        sunrise.setText (format.format(sunriseFind));
+
+
+        int findSunsetInt=Integer.parseInt (weatherData.getSunset ());
+        int sunsetToShowInt=findSunsetInt+findTimeZoneInt;
+        temp.setText (weatherData.getTemprature () + " °C ");
+        String sunsetToShow=Integer.toString(sunsetToShowInt);
+        long sunsetLong = Long.parseLong (sunsetToShow) * 1000;
+        Date sunsetFind = new Date(sunsetLong);
+        format.setTimeZone (TimeZone.getTimeZone ("GMT"));
+        sunset.setText (format.format(sunsetFind));
+
+        pressure.setText (weatherData.getPressure () + "  hPa");
+        wind_speed.setText (weatherData.getWindSpeed () + "  km/h");
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -280,25 +305,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
        protected String doInBackground(String... params) {
            Bundle extras = getIntent().getExtras();
            if (extras != null) {
-               lat=(extras.getString ("latitude3"));
-               lon=(extras.getString ("longitude3"));
+               latitudeOfCurrentLocation =(extras.getString ("latitude3"));
+               longitudeOfCurrentLocation =(extras.getString ("longitude3"));
            }
-           else if (!latitude3.equals ("")) {
-               if (!longitude3.equals ("")) {
-                   lat= (latitude3);
-                   lon=(longitude3);
+           else if (!latitudeOfSearchActivity.equals ("")) {
+               if (!longitudeOfSearchactivity.equals ("")) {
+                   latitudeOfCurrentLocation = (latitudeOfSearchActivity);
+                   longitudeOfCurrentLocation =(longitudeOfSearchactivity);
                } else {
-                   lat=(String.valueOf (lati.getLati ()));
-                   lon=(String.valueOf (longi.getLongi ()));
+                   latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
+                   longitudeOfCurrentLocation =(String.valueOf (weatherData.getLongitudecurrentLocation ()));
                }
            } else {
-               lat=(String.valueOf (lati.getLati ()));
-               lon= (String.valueOf (longi.getLongi ()));
+               latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
+               longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudecurrentLocation ()));
            }
            String inputLine;
            StringBuilder result = new StringBuilder();
            try {
-               URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+lat+"&lon="+lon+"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+               URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+ latitudeOfCurrentLocation +"&lon="+ longitudeOfCurrentLocation +"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
                httpURLConnection.setRequestMethod ("GET");
                httpURLConnection.setDoOutput(false);
@@ -321,75 +346,50 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
        protected void onPostExecute(String aVoid) {
            try {
                JSONObject jsonObject = new JSONObject (aVoid);
-               findTimeZone.setFindTimeZone (jsonObject.getString ("timezone"));
+               weatherData.setFindTimeZone (jsonObject.getString ("timezone"));
 
                JSONObject object1 = jsonObject.getJSONObject ("sys");
-               country_find.setCountry_find (object1.getString ("country"));
-               country.setText (country_find.getCountry_find ());
-
+               weatherData.setCountry (object1.getString ("country"));
                StaticVars.city_find = jsonObject.getString ("name");
-               city.setText (StaticVars.city_find);
 
                JSONObject object2 = jsonObject.getJSONObject ("main");
-               temp_find.setTemp_find (object2.getString ("temp"));
-               temp.setText (temp_find.getTemp_find () + " °C ");
+               weatherData.setTemprature (object2.getString ("temp"));
 
                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-               JSONObject object3 = jsonArray.getJSONObject (0);
-               img.setImg (object3.getString ("icon"));
-               imageView = findViewById (R.id.image);
-               Picasso.get ().load (StaticVars.IMG_URL + img.getImg () + ".png").into (imageView);
+               JSONObject weather = jsonArray.getJSONObject (0);
+               weatherData.setImg (weather.getString ("icon"));
 
                JSONObject object4 = jsonObject.getJSONObject ("coord");
-               lat_find.setLat_find (object4.getDouble ("lat"));
-               latitude1.setText (lat_find.getLat_find () + "°  N ");
+               weatherData.setLatitude (object4.getDouble ("lat"));
 
                JSONObject object5 = jsonObject.getJSONObject ("coord");
-               lon_find.setLon_find ( object5.getDouble ("lon"));
-               longitude1.setText (lon_find.getLon_find () + "°  E ");
+               weatherData.setLongitude ( object5.getDouble ("lon"));
 
                JSONObject object6 = jsonObject.getJSONObject ("main");
-               hum_find.setHum_find (object6.getInt ("humidity"));
-               humidity.setText (hum_find.getHum_find () + " %");
+               weatherData.setHumidity (object6.getInt ("humidity"));
 
                JSONObject object7 = jsonObject.getJSONObject ("sys");
-               sunrise_find.setSunrise_find (object7.getString ("sunrise"));
-               int findTimeZoneInt=Integer.parseInt (findTimeZone.getFindTimeZone ());
-               int findSunriseInt=Integer.parseInt (sunrise_find.getSunrise_find ());
-               int sunriseToShowInt=findSunriseInt+findTimeZoneInt;
-               String sunriseToShow=Integer.toString(sunriseToShowInt);
-               long sunriseLong= Long.parseLong (sunriseToShow) * 1000;
-               Date sunriseFind = new Date(sunriseLong);
-               @SuppressLint("SimpleDateFormat") SimpleDateFormat format= new SimpleDateFormat ("hh:mma");
-               format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-               sunrise.setText (format.format(sunriseFind));
+               weatherData.setSunrise (object7.getString ("sunrise"));
 
                JSONObject object8 = jsonObject.getJSONObject ("sys");
-               sunset_find.setSunset_find (object8.getString ("sunset"));
-               int findSunsetInt=Integer.parseInt (sunset_find.getSunset_find ());
-               int sunsetToShowInt=findSunsetInt+findTimeZoneInt;
-               String sunsetToShow=Integer.toString(sunsetToShowInt);
-               long sunsetLong = Long.parseLong (sunsetToShow) * 1000;
-               Date sunsetFind = new Date(sunsetLong);
-               format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-               sunset.setText (format.format(sunsetFind));
+               weatherData.setSunset (object8.getString ("sunset"));
 
                JSONObject object9 = jsonObject.getJSONObject ("main");
-               pressure_find.setPressure_find (object9.getString ("pressure"));
-               pressure.setText (pressure_find.getPressure_find () + "  hPa");
+               weatherData.setPressure (object9.getString ("pressure"));
+
 
                JSONObject object10 = jsonObject.getJSONObject ("wind");
-               windSpeed_find.setWindSpeed_find (object10.getString ("speed"));
-               wind_speed.setText (windSpeed_find.getWindSpeed_find () + "  km/h");
+               weatherData.setWindSpeed (object10.getString ("speed"));
 
-               date.setDate (jsonObject.getString ("dt"));
-               date2.setDate2 (parseLong (date.getDate ())*1000);
                updateTime (text);
+
+               updateUI (weatherData);
 
            } catch (JSONException  jsonException) {
                jsonException.printStackTrace ();
            }
        }
+
        Runnable updater;
         @SuppressLint("SetTextI18n")
         void updateTime(TextView dateTime2) {

@@ -3,7 +3,6 @@ package com.weatherupdate.glare;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -31,8 +30,8 @@ import java.net.URL;
 
 public class SearchActivity extends AppCompatActivity {
 
-    Variables findLat=new Variables ();
-    Variables findLong=new Variables ();
+    MyWeatherData findLat=new MyWeatherData ();
+    MyWeatherData findLong=new MyWeatherData ();
     StaticVars MAPBOX_ACCESS_TOKEN=new StaticVars ();
     String findCity;
 
