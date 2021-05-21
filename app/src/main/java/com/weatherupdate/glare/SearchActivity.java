@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
-import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,17 +123,17 @@ public class SearchActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject (aVoid);
                 JSONObject object7 = jsonObject.getJSONObject ("coord");
-                findLat.setFindLat (object7.getString ("lat"));
+                findLat.setLatitudeOfsearchedPlace (object7.getString ("lat"));
 
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
-                findLong.setFindLong (object5.getString ("lon"));
+                findLong.setLongitudeOfSearchedPlace (object5.getString ("lon"));
 
                 Intent  i = new Intent(SearchActivity.this, MainActivity.class);
-                i.putExtra("latitude3",findLat.getFindLat ());
-                i.putExtra("longitude3",findLong.getFindLong ());
+                i.putExtra("latitude3",findLat.getLatitudeOfsearchedPlace ());
+                i.putExtra("longitude3",findLong.getLongitudeOfSearchedPlace ());
                 SharedPrefManager sPref=new SharedPrefManager (this);
-                sPref.setSearchActivity ("latitude3", findLat.getFindLat ());
-                sPref.setSearchActivity ("longitude3", findLong.getFindLong ());
+                sPref.setSearchActivity ("latitude3", findLat.getLatitudeOfsearchedPlace ());
+                sPref.setSearchActivity ("longitude3", findLong.getLongitudeOfSearchedPlace ());
                 startActivity (i);
 
             }   catch (JSONException jsonException) {

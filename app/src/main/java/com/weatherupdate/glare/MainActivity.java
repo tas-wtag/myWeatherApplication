@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onLocationChanged(Location location) {
         weatherData.setLatitudeCurrentLocation ((location.getLatitude ( )));
-        weatherData.setLongitudecurrentLocation ((location.getLongitude ( )));
+        weatherData.setLongitudeCurrentLocation ((location.getLongitude ( )));
         FetchData process = new FetchData (dateTime);
         process.execute ( );
     }
@@ -314,11 +314,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                    longitudeOfCurrentLocation =(longitudeOfSearchactivity);
                } else {
                    latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
-                   longitudeOfCurrentLocation =(String.valueOf (weatherData.getLongitudecurrentLocation ()));
+                   longitudeOfCurrentLocation =(String.valueOf (weatherData.getLongitudeCurrentLocation ()));
                }
            } else {
                latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
-               longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudecurrentLocation ()));
+               longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudeCurrentLocation ()));
            }
            String inputLine;
            StringBuilder result = new StringBuilder();

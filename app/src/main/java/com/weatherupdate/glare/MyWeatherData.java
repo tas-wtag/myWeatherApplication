@@ -10,30 +10,29 @@ public class MyWeatherData {
     private String windSpeed;
     private String pressure;
     private double latitudeCurrentLocation;
-    private double longitudecurrentLocation;
+    private double longitudeCurrentLocation;
     private double latitude;
     private double longitude;
     private int humidity;
     private String findTimeZone;
+    private String latitudeOfsearchedPlace;
+    private String longitudeOfSearchedPlace;
 
-    public String getFindLat() {
-        return findLat;
+    public String getLatitudeOfsearchedPlace() {
+        return latitudeOfsearchedPlace;
     }
 
-    public void setFindLat(String findLat) {
-        this.findLat = findLat;
+    public void setLatitudeOfsearchedPlace(String latitudeOfsearchedPlace) {
+        this.latitudeOfsearchedPlace = latitudeOfsearchedPlace;
     }
 
-    public String getFindLong() {
-        return findLong;
+    public String getLongitudeOfSearchedPlace() {
+        return longitudeOfSearchedPlace;
     }
 
-    public void setFindLong(String findLong) {
-        this.findLong = findLong;
+    public void setLongitudeOfSearchedPlace(String longitudeOfSearchedPlace) {
+        this.longitudeOfSearchedPlace = longitudeOfSearchedPlace;
     }
-
-    private String findLat;
-    private String findLong;
 
     public String getCountry() {
         return country;
@@ -130,12 +129,12 @@ public class MyWeatherData {
     public void setLatitudeCurrentLocation(double latitudeCurrentLocation) {
         this.latitudeCurrentLocation = latitudeCurrentLocation;
     }
-    public double getLongitudecurrentLocation() {
-        return longitudecurrentLocation;
+    public double getLongitudeCurrentLocation() {
+        return longitudeCurrentLocation;
     }
 
-    public void setLongitudecurrentLocation(double longitudecurrentLocation) {
-        this.longitudecurrentLocation = longitudecurrentLocation;
+    public void setLongitudeCurrentLocation(double longitudeCurrentLocation) {
+        this.longitudeCurrentLocation = longitudeCurrentLocation;
     }
 
     public int getHumidity() {
@@ -145,7 +144,5 @@ public class MyWeatherData {
     public void setHumidity(int humidity) {
         this.humidity = humidity;
     }
-
-
 
 }
