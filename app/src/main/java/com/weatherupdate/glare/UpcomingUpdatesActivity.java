@@ -1,19 +1,11 @@
 package com.weatherupdate.glare;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,7 +18,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class UpcomingUpdatesActivity extends AppCompatActivity {
@@ -47,7 +38,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_second);
+        setContentView (R.layout.activity_upcomingforecast);
 
         weatherList = new ArrayList<> ();
         lv =(ListView) findViewById (R.id.listView);

@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     SharedPrefManager sharedPrefManager=new SharedPrefManager (this);
     SharedPrefManager sharedPrefManager2=new SharedPrefManager (this);
-    SharedPrefManager sharedPrefManager3=new SharedPrefManager (this);
     protected LocationManager locationManager;
 
 
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         wind_speed = findViewById (R.id.windSpeed3);
         locationManager = (LocationManager) getApplicationContext ( ).getSystemService (LOCATION_SERVICE);
     }
-    //location
+
     public void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission (this,
                 Manifest.permission.ACCESS_FINE_LOCATION)

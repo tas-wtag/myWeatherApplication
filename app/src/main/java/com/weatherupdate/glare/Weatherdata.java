@@ -18,8 +18,6 @@ public class Weatherdata {
         return vv;
     }
 
-    //public String vv;
-
     public String getTemp2() {
         return temp2;
     }

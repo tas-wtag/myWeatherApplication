@@ -23,7 +23,6 @@ public class Customlist extends ArrayAdapter<Weatherdata> {
     private Context context;
     ArrayList<Weatherdata> weatherdata;
     public Customlist(@NonNull Context context, ArrayList<Weatherdata> weatherdata) {
-        //super (context, resource);
         super(context, R.layout.row_layout, weatherdata);
         this.context = context;
         this.weatherdata= weatherdata;

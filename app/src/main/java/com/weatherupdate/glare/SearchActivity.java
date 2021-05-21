@@ -29,9 +29,8 @@ import java.net.URL;
 
 public class SearchActivity extends AppCompatActivity {
 
-    MyWeatherData findLat=new MyWeatherData ();
-    MyWeatherData findLong=new MyWeatherData ();
-    StaticVars MAPBOX_ACCESS_TOKEN=new StaticVars ();
+    MyWeatherData myWeatherData=new MyWeatherData ();
+
     String findCity;
 
     TextView cityName;
@@ -45,13 +44,10 @@ public class SearchActivity extends AppCompatActivity {
     TextView windSpeed;
     TextView humidity;
 
-
-    private String data2;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_third);
+        setContentView (R.layout.activity_search);
 
         cityName = findViewById (R.id.cityName);
         temp = findViewById (R.id.temperature);
@@ -78,10 +74,10 @@ public class SearchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
             if (resultCode == Activity.RESULT_OK && requestCode == StaticVars.REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
-            data2 = feature.toJson ( );
+                String data1 = feature.toJson ( );
 
             try{
-            JSONObject jsonObject = new JSONObject (data2);
+            JSONObject jsonObject = new JSONObject (data1);
             findCity=jsonObject.getString ("text");
 
             DataFetch process = new DataFetch ();
@@ -92,6 +88,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
+
     @SuppressLint("StaticFieldLeak")
     class DataFetch extends AsyncTask<String, Void, String> {
         @Override
@@ -123,17 +120,16 @@ public class SearchActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject (aVoid);
                 JSONObject object7 = jsonObject.getJSONObject ("coord");
-                findLat.setLatitudeOfsearchedPlace (object7.getString ("lat"));
+                myWeatherData.setLatitudeOfsearchedPlace (object7.getString ("lat"));
 
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
-                findLong.setLongitudeOfSearchedPlace (object5.getString ("lon"));
+                myWeatherData.setLongitudeOfSearchedPlace (object5.getString ("lon"));
 
                 Intent  i = new Intent(SearchActivity.this, MainActivity.class);
-                i.putExtra("latitude3",findLat.getLatitudeOfsearchedPlace ());
-                i.putExtra("longitude3",findLong.getLongitudeOfSearchedPlace ());
-                SharedPrefManager sPref=new SharedPrefManager (this);
-                sPref.setSearchActivity ("latitude3", findLat.getLatitudeOfsearchedPlace ());
-                sPref.setSearchActivity ("longitude3", findLong.getLongitudeOfSearchedPlace ());
+                i.putExtra("latitude3",myWeatherData.getLatitudeOfsearchedPlace ());
+                i.putExtra("longitude3",myWeatherData.getLongitudeOfSearchedPlace ());
+                SharedPrefManager.setSearchActivity ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ());
+                SharedPrefManager.setSearchActivity ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ());
                 startActivity (i);
 
             }   catch (JSONException jsonException) {
