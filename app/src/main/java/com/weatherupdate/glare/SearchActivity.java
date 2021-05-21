@@ -89,6 +89,15 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    public void startMainActivity(){
+        Intent  i = new Intent(SearchActivity.this, MainActivity.class);
+        i.putExtra("latitude3",myWeatherData.getLatitudeOfsearchedPlace ());
+        i.putExtra("longitude3",myWeatherData.getLongitudeOfSearchedPlace ());
+        SharedPrefManager.setSearchActivity ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ());
+        SharedPrefManager.setSearchActivity ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ());
+        startActivity (i);
+    }
+
     @SuppressLint("StaticFieldLeak")
     class DataFetch extends AsyncTask<String, Void, String> {
         @Override
@@ -125,12 +134,7 @@ public class SearchActivity extends AppCompatActivity {
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
                 myWeatherData.setLongitudeOfSearchedPlace (object5.getString ("lon"));
 
-                Intent  i = new Intent(SearchActivity.this, MainActivity.class);
-                i.putExtra("latitude3",myWeatherData.getLatitudeOfsearchedPlace ());
-                i.putExtra("longitude3",myWeatherData.getLongitudeOfSearchedPlace ());
-                SharedPrefManager.setSearchActivity ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ());
-                SharedPrefManager.setSearchActivity ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ());
-                startActivity (i);
+                startMainActivity();
 
             }   catch (JSONException jsonException) {
                 jsonException.printStackTrace ();
