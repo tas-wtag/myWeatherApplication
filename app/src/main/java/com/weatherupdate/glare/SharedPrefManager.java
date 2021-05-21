@@ -9,19 +9,7 @@ public class SharedPrefManager {
         this.context = context;
     }
 
-    public SharedPrefManager(SearchActivity.DataFetch dataFetch) {
-    }
 
-    public boolean sharedPreferenceExist(String key)
-    {
-        SharedPreferences prefs = context.getSharedPreferences("MySharedPref", 0);
-        if(!prefs.contains(key)){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
     public static void setPauseTime( String key, String value) {
         SharedPreferences sharedPreferences=context.getSharedPreferences ("MySharedPref", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
