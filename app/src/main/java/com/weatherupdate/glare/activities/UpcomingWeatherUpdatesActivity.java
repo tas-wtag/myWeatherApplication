@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.activities;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.weatherupdate.glare.utilities.ConstantData;
+import com.weatherupdate.glare.R;
+import com.weatherupdate.glare.models.Weatherdata;
+import com.weatherupdate.glare.adapters.WeatherDataAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UpcomingUpdatesActivity extends AppCompatActivity {
+public class UpcomingWeatherUpdatesActivity extends AppCompatActivity {
 
     public ListView lv;
     public String temp2, date2;
@@ -31,7 +36,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
     String latitude2;
     String longitude2;
 
-    public List<UpcomingUpdatesActivity> wdetails=new ArrayList<> ();
+    public List<UpcomingWeatherUpdatesActivity> wdetails=new ArrayList<> ();
     ArrayList<Weatherdata> weatherList;
 
 
@@ -119,7 +124,7 @@ public class UpcomingUpdatesActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace ();
             }
-            Customlist adapter = new Customlist(UpcomingUpdatesActivity.this, weatherList);
+            WeatherDataAdapter adapter = new WeatherDataAdapter(UpcomingWeatherUpdatesActivity.this, weatherList);
             listview.setAdapter(adapter);
         }
     }

@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.models;
 
 public class Weatherdata {
 

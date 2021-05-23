@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.weatherupdate.glare.utilities.ConstantData;
+import com.weatherupdate.glare.R;
+import com.weatherupdate.glare.models.MyWeatherData;
+import com.weatherupdate.glare.utilities.SharedPrefManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +49,8 @@ public class SearchActivity extends AppCompatActivity {
     TextView windSpeed;
     TextView humidity;
 
+    public static PlaceOptions placeOptions;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
@@ -64,8 +71,8 @@ public class SearchActivity extends AppCompatActivity {
         Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
         Intent intent;
         intent = new PlaceAutocomplete.IntentBuilder ( )
-                .accessToken (ConstantData.getMapboxAccessToken ())
-                .placeOptions (ConstantData.placeOptions)
+                .accessToken (ConstantData.MAPBOX_ACCESS_TOKEN)
+                .placeOptions (placeOptions)
                 .build (this);
         startActivityForResult (intent, ConstantData.REQUEST_CODE_AUTOCOMPLETE);
     }

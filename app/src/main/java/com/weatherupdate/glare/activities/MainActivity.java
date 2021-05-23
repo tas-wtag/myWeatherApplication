@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -25,6 +25,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.squareup.picasso.Picasso;
+import com.weatherupdate.glare.utilities.ConstantData;
+import com.weatherupdate.glare.R;
+import com.weatherupdate.glare.models.MyWeatherData;
+import com.weatherupdate.glare.utilities.SharedPrefManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -47,20 +51,17 @@ import java.util.TimeZone;
 import static java.lang.Long.parseLong;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
-
-
-     String latitudeOfSearchActivity;
-     String longitudeOfSearchactivity;
-     String latitudeOfCurrentLocation;
-     String longitudeOfCurrentLocation;
-     MyWeatherData weatherData=new MyWeatherData ();
-
-
+    String latitudeOfSearchActivity;
+    String longitudeOfSearchactivity;
+    String latitudeOfCurrentLocation;
+    String longitudeOfCurrentLocation;
+    MyWeatherData weatherData = new MyWeatherData ();
 
     private String timePause;
     public long dateInPause;
     public long dateInResume;
     public long dateInPause2;
+    public String city_name;
 
     ImageView imageView;
     TextView country, city, temp, dateTime;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 return true;
 
             case R.id.action_upcoming:
-                Intent intent2 = new Intent (MainActivity.this, UpcomingUpdatesActivity.class);
+                Intent intent2 = new Intent (MainActivity.this, UpcomingWeatherUpdatesActivity.class);
                 intent2.putExtra ("Latitude", latitudeOfCurrentLocation);
                 intent2.putExtra ("Longitude", longitudeOfCurrentLocation);
                 startActivity (intent2);
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onResume() {
         super.onResume ( );
-         sharedPrefManager.getSearchActivity ("MySP");
+        String mySp = sharedPrefManager.getSearchActivity ("MySP");
         if(sharedPrefManager.getSearchActivity ("MySP")!=null)
         {
             latitudeOfSearchActivity =sharedPrefManager2.getSearchActivity ("latitude3");
@@ -262,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         int findTimeZoneInt=Integer.parseInt (weatherData.getFindTimeZone ());
 
         country.setText (weatherData.getCountry ());
-        city.setText (ConstantData.city_find);
+        city.setText (city_name);
 
 
         Picasso.get ().load (ConstantData.IMG_URL + weatherData.getImg () + ".png").into (imageView);
@@ -296,113 +297,113 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     @SuppressLint("StaticFieldLeak")
     private class FetchData extends AsyncTask<String, Void, String> {
-      TextView text;
-      public FetchData(TextView textView){
-          this.text=textView;
-      }
-       @Override
-       protected String doInBackground(String... params) {
-           Bundle extras = getIntent().getExtras();
-           if (extras != null) {
-               latitudeOfCurrentLocation =(extras.getString ("latitude3"));
-               longitudeOfCurrentLocation =(extras.getString ("longitude3"));
-           }
-           else if (!latitudeOfSearchActivity.equals ("")) {
-               if (!longitudeOfSearchactivity.equals ("")) {
-                   latitudeOfCurrentLocation = (latitudeOfSearchActivity);
-                   longitudeOfCurrentLocation =(longitudeOfSearchactivity);
-               } else {
-                   latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
-                   longitudeOfCurrentLocation =(String.valueOf (weatherData.getLongitudeCurrentLocation ()));
-               }
-           } else {
-               latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
-               longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudeCurrentLocation ()));
-           }
-           String inputLine;
-           StringBuilder result = new StringBuilder();
-           try {
-               URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+ latitudeOfCurrentLocation +"&lon="+ longitudeOfCurrentLocation +"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
-               HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
-               httpURLConnection.setRequestMethod ("GET");
-               httpURLConnection.setDoOutput(false);
-               InputStream inputStream = httpURLConnection.getInputStream ();
-                   BufferedReader  bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-               while ((inputLine = bufferedReader.readLine ()) != null) {
-                   result.append (inputLine);
-               }
-           } catch (ProtocolException e) {
-               e.printStackTrace ();
-           } catch (MalformedURLException e) {
-               e.printStackTrace ();
-           } catch (IOException e) {
-               e.printStackTrace ();
-           }
-           return result.toString ();
-    }
-           @SuppressLint("SetTextI18n")
-       @Override
-       protected void onPostExecute(String aVoid) {
-           try {
-               JSONObject jsonObject = new JSONObject (aVoid);
-               weatherData.setFindTimeZone (jsonObject.getString ("timezone"));
+        TextView text;
+        public FetchData(TextView textView){
+            this.text=textView;
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                latitudeOfCurrentLocation =(extras.getString ("latitude3"));
+                longitudeOfCurrentLocation =(extras.getString ("longitude3"));
+            }
+            else if (!latitudeOfSearchActivity.equals ("")) {
+                if (!longitudeOfSearchactivity.equals ("")) {
+                    latitudeOfCurrentLocation = (latitudeOfSearchActivity);
+                    longitudeOfCurrentLocation =(longitudeOfSearchactivity);
+                } else {
+                    latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
+                    longitudeOfCurrentLocation =(String.valueOf (weatherData.getLongitudeCurrentLocation ()));
+                }
+            } else {
+                latitudeOfCurrentLocation =(String.valueOf (weatherData.getLatitudeCurrentLocation ()));
+                longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudeCurrentLocation ()));
+            }
+            String inputLine;
+            StringBuilder result = new StringBuilder();
+            try {
+                URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat="+ latitudeOfCurrentLocation +"&lon="+ longitudeOfCurrentLocation +"&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
+                httpURLConnection.setRequestMethod ("GET");
+                httpURLConnection.setDoOutput(false);
+                InputStream inputStream = httpURLConnection.getInputStream ();
+                BufferedReader  bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
+                while ((inputLine = bufferedReader.readLine ()) != null) {
+                    result.append (inputLine);
+                }
+            } catch (ProtocolException e) {
+                e.printStackTrace ();
+            } catch (MalformedURLException e) {
+                e.printStackTrace ();
+            } catch (IOException e) {
+                e.printStackTrace ();
+            }
+            return result.toString ();
+        }
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String aVoid) {
+            try {
+                JSONObject jsonObject = new JSONObject (aVoid);
+                weatherData.setFindTimeZone (jsonObject.getString ("timezone"));
 
-               JSONObject object1 = jsonObject.getJSONObject ("sys");
-               weatherData.setCountry (object1.getString ("country"));
-               ConstantData.city_find = jsonObject.getString ("name");
+                JSONObject object1 = jsonObject.getJSONObject ("sys");
+                weatherData.setCountry (object1.getString ("country"));
+                city_name = jsonObject.getString ("name");
 
-               JSONObject object2 = jsonObject.getJSONObject ("main");
-               weatherData.setTemprature (object2.getString ("temp"));
+                JSONObject object2 = jsonObject.getJSONObject ("main");
+                weatherData.setTemprature (object2.getString ("temp"));
 
-               JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-               JSONObject weather = jsonArray.getJSONObject (0);
-               weatherData.setImg (weather.getString ("icon"));
+                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
+                JSONObject weather = jsonArray.getJSONObject (0);
+                weatherData.setImg (weather.getString ("icon"));
 
-               JSONObject object4 = jsonObject.getJSONObject ("coord");
-               weatherData.setLatitude (object4.getDouble ("lat"));
+                JSONObject object4 = jsonObject.getJSONObject ("coord");
+                weatherData.setLatitude (object4.getDouble ("lat"));
 
-               JSONObject object5 = jsonObject.getJSONObject ("coord");
-               weatherData.setLongitude ( object5.getDouble ("lon"));
+                JSONObject object5 = jsonObject.getJSONObject ("coord");
+                weatherData.setLongitude ( object5.getDouble ("lon"));
 
-               JSONObject object6 = jsonObject.getJSONObject ("main");
-               weatherData.setHumidity (object6.getInt ("humidity"));
+                JSONObject object6 = jsonObject.getJSONObject ("main");
+                weatherData.setHumidity (object6.getInt ("humidity"));
 
-               JSONObject object7 = jsonObject.getJSONObject ("sys");
-               weatherData.setSunrise (object7.getString ("sunrise"));
+                JSONObject object7 = jsonObject.getJSONObject ("sys");
+                weatherData.setSunrise (object7.getString ("sunrise"));
 
-               JSONObject object8 = jsonObject.getJSONObject ("sys");
-               weatherData.setSunset (object8.getString ("sunset"));
+                JSONObject object8 = jsonObject.getJSONObject ("sys");
+                weatherData.setSunset (object8.getString ("sunset"));
 
-               JSONObject object9 = jsonObject.getJSONObject ("main");
-               weatherData.setPressure (object9.getString ("pressure"));
+                JSONObject object9 = jsonObject.getJSONObject ("main");
+                weatherData.setPressure (object9.getString ("pressure"));
 
 
-               JSONObject object10 = jsonObject.getJSONObject ("wind");
-               weatherData.setWindSpeed (object10.getString ("speed"));
+                JSONObject object10 = jsonObject.getJSONObject ("wind");
+                weatherData.setWindSpeed (object10.getString ("speed"));
 
-               updateTime (text);
+                updateTime (text);
 
-               updateUI (weatherData);
+                updateUI (weatherData);
 
-           } catch (JSONException  jsonException) {
-               jsonException.printStackTrace ();
-           }
-       }
+            } catch (JSONException  jsonException) {
+                jsonException.printStackTrace ();
+            }
+        }
 
-       Runnable updater;
+        Runnable updater;
         @SuppressLint("SetTextI18n")
         void updateTime(TextView dateTime2) {
             final Handler timerHandler = new Handler();
             updater = () -> {
-               Calendar calender = Calendar.getInstance();
-               int day=calender.get(Calendar.DATE);
-               int month=calender.get(Calendar.MONTH)+1;
-               int year=calender.get(Calendar.YEAR);
-               int hour=calender.get (Calendar.HOUR_OF_DAY);
-               int min=calender.get (Calendar.MINUTE);
-               int sec=calender.get(Calendar.SECOND);
-               dateTime2.setText(day+"-"+month+"-"+year+getString(R.string.newLine)+hour+":"+min+":"+sec);
-               timerHandler.postDelayed(updater,1000);
+                Calendar calender = Calendar.getInstance();
+                int day=calender.get(Calendar.DATE);
+                int month=calender.get(Calendar.MONTH)+1;
+                int year=calender.get(Calendar.YEAR);
+                int hour=calender.get (Calendar.HOUR_OF_DAY);
+                int min=calender.get (Calendar.MINUTE);
+                int sec=calender.get(Calendar.SECOND);
+                dateTime2.setText(day+"-"+month+"-"+year+getString(R.string.newLine)+hour+":"+min+":"+sec);
+                timerHandler.postDelayed(updater,1000);
             };
             timerHandler.post(updater);
         }

@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,17 +14,15 @@ import androidx.annotation.NonNull;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-public class Customlist extends ArrayAdapter<Weatherdata> {
-    private Context context;
+import com.weatherupdate.glare.R;
+import com.weatherupdate.glare.models.Weatherdata;
+
+public class WeatherDataAdapter extends ArrayAdapter<Weatherdata> {
+
     ArrayList<Weatherdata> weatherdata;
-    public Customlist(@NonNull Context context, ArrayList<Weatherdata> weatherdata) {
+    public WeatherDataAdapter(@NonNull Context context, ArrayList<Weatherdata> weatherdata) {
         super(context, R.layout.row_layout, weatherdata);
-        this.context = context;
         this.weatherdata= weatherdata;
     }
     @SuppressLint({"ViewHolder", "InflateParams"})
