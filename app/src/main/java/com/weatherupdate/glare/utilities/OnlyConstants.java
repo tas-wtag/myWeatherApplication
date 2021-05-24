@@ -1,4 +1,6 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.utilities;
+
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 
 public class OnlyConstants {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;

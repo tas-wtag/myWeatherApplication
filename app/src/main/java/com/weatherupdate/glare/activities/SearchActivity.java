@@ -15,7 +15,7 @@ import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
-import com.weatherupdate.glare.utilities.ConstantData;
+import com.weatherupdate.glare.utilities.OnlyConstants;
 import com.weatherupdate.glare.R;
 import com.weatherupdate.glare.models.MyWeatherData;
 import com.weatherupdate.glare.utilities.SharedPrefManager;
@@ -71,15 +71,15 @@ public class SearchActivity extends AppCompatActivity {
         Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
         Intent intent;
         intent = new PlaceAutocomplete.IntentBuilder ( )
-                .accessToken (ConstantData.MAPBOX_ACCESS_TOKEN)
+                .accessToken (OnlyConstants.MAPBOX_ACCESS_TOKEN)
                 .placeOptions (placeOptions)
                 .build (this);
-        startActivityForResult (intent, ConstantData.REQUEST_CODE_AUTOCOMPLETE);
+        startActivityForResult (intent, OnlyConstants.REQUEST_CODE_AUTOCOMPLETE);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK && requestCode == ConstantData.REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == Activity.RESULT_OK && requestCode == OnlyConstants.REQUEST_CODE_AUTOCOMPLETE) {
             CarmenFeature feature = PlaceAutocomplete.getPlace(data);
                 String data1 = feature.toJson ( );
 

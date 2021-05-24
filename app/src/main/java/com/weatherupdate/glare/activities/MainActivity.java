@@ -25,7 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.squareup.picasso.Picasso;
-import com.weatherupdate.glare.utilities.ConstantData;
+import com.weatherupdate.glare.utilities.OnlyConstants;
 import com.weatherupdate.glare.R;
 import com.weatherupdate.glare.models.MyWeatherData;
 import com.weatherupdate.glare.utilities.SharedPrefManager;
@@ -149,14 +149,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         .setPositiveButton (R.string.ok, (dialogInterface, i) -> {
                             ActivityCompat.requestPermissions (MainActivity.this,
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    ConstantData.MY_PERMISSIONS_REQUEST_LOCATION);
+                                    OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION);
                         })
                         .create ( )
                         .show ( );
             } else {
                 ActivityCompat.requestPermissions (this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        ConstantData.MY_PERMISSIONS_REQUEST_LOCATION);
+                        OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION);
             }
         }
     }
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onRequestPermissionsResult(int requestCode,
                                            String @NotNull [] permissions, int @NotNull [] grantResults) {
         super.onRequestPermissionsResult (requestCode, permissions, grantResults);
-        if (requestCode == ConstantData.MY_PERMISSIONS_REQUEST_LOCATION) {
+        if (requestCode == OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION) {
             if ((grantResults.length > 0)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         city.setText (city_name);
 
 
-        Picasso.get ().load (ConstantData.IMG_URL + weatherData.getImg () + ".png").into (imageView);
+        Picasso.get ().load (OnlyConstants.IMG_URL + weatherData.getImg () + ".png").into (imageView);
 
         latitude.setText (weatherData.getLatitude () + "°  N ");
         longitude.setText (weatherData.getLongitude () + "°  E ");

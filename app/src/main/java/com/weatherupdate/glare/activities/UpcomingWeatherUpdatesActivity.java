@@ -7,10 +7,10 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.weatherupdate.glare.OnlyConstants;
 import com.weatherupdate.glare.R;
 import com.weatherupdate.glare.adapters.WeatherDataAdaptor;
 import com.weatherupdate.glare.models.UpcomingWeatherData;
+import com.weatherupdate.glare.utilities.OnlyConstants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +23,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class UpcomingWeatherUpdatesActivity extends AppCompatActivity {
 
