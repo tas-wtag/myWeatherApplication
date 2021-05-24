@@ -16,12 +16,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import com.weatherupdate.glare.R;
-import com.weatherupdate.glare.models.Weatherdata;
+import com.weatherupdate.glare.models.UpcomingWeatherData;
 
-public class WeatherDataAdapter extends ArrayAdapter<Weatherdata> {
+public class WeatherDataAdapter extends ArrayAdapter<UpcomingWeatherData> {
 
-    ArrayList<Weatherdata> weatherdata;
-    public WeatherDataAdapter(@NonNull Context context, ArrayList<Weatherdata> weatherdata) {
+    ArrayList<UpcomingWeatherData> weatherdata;
+    public WeatherDataAdapter(@NonNull Context context, ArrayList<UpcomingWeatherData> weatherdata) {
         super(context, R.layout.row_layout, weatherdata);
         this.weatherdata= weatherdata;
     }
@@ -35,11 +35,11 @@ public class WeatherDataAdapter extends ArrayAdapter<Weatherdata> {
         TextView rain = (TextView) convertView.findViewById(R.id.rain);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView2);
 
-        Weatherdata temperature=getItem (position);
-        temp2.setText (temperature.getTemp2 ());
-        rain.setText (temperature.getRain2 ());
-        date2.setText (temperature.getVv ());
-        Picasso.get().load (temperature.getImg3 ()).placeholder(R.drawable.hello).into (imageView);
+        UpcomingWeatherData temperature=getItem (position);
+        temp2.setText (temperature.getTempOfUpcomingWeather ());
+        rain.setText (temperature.getUpcomingWeatherSituation ());
+        date2.setText (temperature.getDateInExpectedFormat ());
+        Picasso.get().load (temperature.getUpcomingWeatherImage ()).placeholder(R.drawable.hello).into (imageView);
 
         return convertView;
     }

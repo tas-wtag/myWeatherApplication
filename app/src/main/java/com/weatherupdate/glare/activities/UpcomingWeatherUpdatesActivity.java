@@ -36,7 +36,6 @@ public class UpcomingWeatherUpdatesActivity extends AppCompatActivity {
     String latitude2;
     String longitude2;
 
-    public List<UpcomingWeatherUpdatesActivity> wdetails = new ArrayList<> ( );
     ArrayList<UpcomingWeatherData> weatherList;
 
 
