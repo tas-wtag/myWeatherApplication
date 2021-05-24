@@ -44,7 +44,7 @@ public class UpcomingWeatherUpdatesActivity extends AppCompatActivity {
         setContentView (R.layout.activity_upcomingforecast);
 
         weatherList = new ArrayList<> ( );
-        listView = (ListView) findViewById (R.id.listView);
+        listView = findViewById (R.id.listView);
 
         Bundle extras = getIntent ( ).getExtras ( );
         if (extras != null) {

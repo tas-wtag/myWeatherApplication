@@ -113,15 +113,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
         setContentView (R.layout.activity_main);
-        checkLocationPermission ( );
+        checkLocationPermission ();
 
-        ActionBar actionBar;
-        actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable
-                = new ColorDrawable(Color.parseColor("#FF6200EE"));
-
-        assert actionBar != null;
-        actionBar.setBackgroundDrawable(colorDrawable);
         country = findViewById (R.id.cityName);
         city = findViewById (R.id.city);
         temp = findViewById (R.id.temperature);
