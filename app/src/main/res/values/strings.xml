@@ -10,4 +10,23 @@
     <string name="action_search">Search</string>
     <string name="hello_world">Hello world!</string>
     <string name="newLine">\n</string>
+    <string name="textview">TextView</string>
+    <string name="pressure">Pressure</string>
+    <string name="sunset">Sunset</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="latitude">:Latitude</string>
+    <string name="longitude">:Longitude</string>
+    <string name="humidity">:Humidity</string>
+    <string name="sunrise">:Sunrise</string>
+    <string name="Sunset">:Sunset</string>
+    <string name="Pressure">:Pressure</string>
+    <string name="Wind_speed">:Wind Speed</string>
+    <string name="Latitude">Latitude</string>
+    <string name="Longitude">Longitude</string>
+    <string name="Humidity">Humidity</string>
+    <string name="Sunrise">Sunrise</string>
+    <string name="date_time">Date/Time</string>
+    <string name="c">°C</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
 </resources>

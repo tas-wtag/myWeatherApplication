@@ -20,10 +20,9 @@
         android:background="#8C0B0A0A"
         android:backgroundTint="@color/white"
         android:hapticFeedbackEnabled="false"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints,UnusedAttribute">
 
         <TextView
             android:id="@+id/cityName"
@@ -34,7 +33,7 @@
             android:layout_marginTop="15dp"
             android:background="#00FFFFFF"
             android:textColor="@color/black"
-            android:textSize="35dp"
+            android:textSize="35sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dateTime2" />
 
@@ -46,7 +45,8 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/temperature"
@@ -56,7 +56,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="70dp"
             android:textColor="#000000"
-            android:textSize="55dp"
+            android:textSize="55sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +71,7 @@
             android:layout_marginRight="293dp"
             android:layout_marginBottom="15dp"
             android:textColor="#000000"
-            android:textSize="25dp"
+            android:textSize="25sp"
             app:layout_constraintBottom_toTopOf="@+id/cityName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -88,7 +88,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:textColor="#000000"
-            android:textSize="30dp"
+            android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintStart_toEndOf="@+id/cityName"
