@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.weatherupdate.glare.models.MyWeatherData;
+import com.weatherupdate.glare.OnlyConstants;
+import com.weatherupdate.glare.R;
+import com.weatherupdate.glare.utilities.SharedPrefManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,8 +34,7 @@ import java.net.URL;
 
 public class SearchActivity extends AppCompatActivity {
 
-    MyWeatherData myWeatherData=new MyWeatherData ();
-
+    MyWeatherData myWeatherData = new MyWeatherData ( );
     String findCity;
 
     TextView cityName;
@@ -43,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     TextView pressure;
     TextView windSpeed;
     TextView humidity;
+    public static PlaceOptions placeOptions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,24 +69,25 @@ public class SearchActivity extends AppCompatActivity {
         Mapbox.getInstance (this, getString (R.string.MAPBOX_ACCESS_TOKEN));
         Intent intent;
         intent = new PlaceAutocomplete.IntentBuilder ( )
-                .accessToken (ConstantData.getMapboxAccessToken ())
-                .placeOptions (ConstantData.placeOptions)
+                .accessToken (OnlyConstants.MAPBOX_ACCESS_TOKEN)
+                .placeOptions (placeOptions)
                 .build (this);
-        startActivityForResult (intent, ConstantData.REQUEST_CODE_AUTOCOMPLETE);
+        startActivityForResult (intent, OnlyConstants.REQUEST_CODE_AUTOCOMPLETE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK && requestCode == ConstantData.REQUEST_CODE_AUTOCOMPLETE) {
-            CarmenFeature feature = PlaceAutocomplete.getPlace(data);
-                String data1 = feature.toJson ( );
+        super.onActivityResult (requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && requestCode == OnlyConstants.REQUEST_CODE_AUTOCOMPLETE) {
+            CarmenFeature feature = PlaceAutocomplete.getPlace (data);
+            String data1 = feature.toJson ( );
 
-            try{
-            JSONObject jsonObject = new JSONObject (data1);
-            findCity=jsonObject.getString ("text");
+            try {
+                JSONObject jsonObject = new JSONObject (data1);
+                findCity = jsonObject.getString ("text");
 
-            DataFetch process = new DataFetch ();
-            process.execute ();
+                DataFetch process = new DataFetch ( );
+                process.execute ( );
 
             } catch (JSONException e) {
                 e.printStackTrace ( );
@@ -89,12 +95,12 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    public void startMainActivity(){
-        Intent  i = new Intent(SearchActivity.this, MainActivity.class);
-        i.putExtra("latitude3",myWeatherData.getLatitudeOfsearchedPlace ());
-        i.putExtra("longitude3",myWeatherData.getLongitudeOfSearchedPlace ());
-        SharedPrefManager.setSearchActivity ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ());
-        SharedPrefManager.setSearchActivity ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ());
+    public void startMainActivity() {
+        Intent i = new Intent (SearchActivity.this, MainActivity.class);
+        i.putExtra ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ( ));
+        i.putExtra ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ( ));
+        SharedPrefManager.setSearchActivity ("latitude3", myWeatherData.getLatitudeOfsearchedPlace ( ));
+        SharedPrefManager.setSearchActivity ("longitude3", myWeatherData.getLongitudeOfSearchedPlace ( ));
         startActivity (i);
     }
 
@@ -103,24 +109,24 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String inputLine2;
-            StringBuilder result = new StringBuilder();
+            StringBuilder result = new StringBuilder ( );
             try {
-                URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?q="+findCity+"&units=metric&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ();
+                URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?q=" + findCity + "&units=metric&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ( );
                 httpURLConnection.setRequestMethod ("GET");
-                InputStream inputStream = httpURLConnection.getInputStream ();
+                InputStream inputStream = httpURLConnection.getInputStream ( );
                 BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-                while ((inputLine2 = bufferedReader.readLine ()) != null) {
+                while ((inputLine2 = bufferedReader.readLine ( )) != null) {
                     result.append (inputLine2);
                 }
             } catch (ProtocolException e) {
-                e.printStackTrace ();
+                e.printStackTrace ( );
             } catch (MalformedURLException e) {
-                e.printStackTrace ();
+                e.printStackTrace ( );
             } catch (IOException e) {
-                e.printStackTrace ();
+                e.printStackTrace ( );
             }
-            return result.toString ();
+            return result.toString ( );
         }
 
         @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
@@ -134,10 +140,10 @@ public class SearchActivity extends AppCompatActivity {
                 JSONObject object5 = jsonObject.getJSONObject ("coord");
                 myWeatherData.setLongitudeOfSearchedPlace (object5.getString ("lon"));
 
-                startMainActivity();
+                startMainActivity ( );
 
-            }   catch (JSONException jsonException) {
-                jsonException.printStackTrace ();
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace ( );
             }
         }
     }

@@ -23,11 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyWeather2"
         tools:targetApi="n">
-        <activity android:name="com.weatherupdate.glare.UpcomingUpdatesActivity"
+        <activity android:name="com.weatherupdate.glare.activities.UpcomingWeatherUpdatesActivity"
            />
-        <activity android:name="com.weatherupdate.glare.SearchActivity"
+        <activity android:name="com.weatherupdate.glare.activities.SearchActivity"
             />
-        <activity android:name="com.weatherupdate.glare.MainActivity">
+        <activity android:name="com.weatherupdate.glare.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

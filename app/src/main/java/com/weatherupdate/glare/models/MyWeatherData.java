@@ -1,4 +1,4 @@
-package com.weatherupdate.glare;
+package com.weatherupdate.glare.models;
 
 public class MyWeatherData {
     private String country;
@@ -122,13 +122,14 @@ public class MyWeatherData {
         this.longitude = longitude;
     }
 
-   public double getLatitudeCurrentLocation() {
+    public double getLatitudeCurrentLocation() {
         return latitudeCurrentLocation;
     }
 
     public void setLatitudeCurrentLocation(double latitudeCurrentLocation) {
         this.latitudeCurrentLocation = latitudeCurrentLocation;
     }
+
     public double getLongitudeCurrentLocation() {
         return longitudeCurrentLocation;
     }
