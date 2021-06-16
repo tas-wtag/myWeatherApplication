@@ -14,11 +14,12 @@ import com.weatherupdate.glare.models.UpcomingWeatherData
 import java.util.*
 
 class WeatherDataAdaptor(
-    context: Context,
-    weatherdata: ArrayList<UpcomingWeatherData>
-) : ArrayAdapter<UpcomingWeatherData?>(
-    context, R.layout.row_layout, weatherdata as List<UpcomingWeatherData?>
-) {
+     context: Context,
+     weatherdata: ArrayList<UpcomingWeatherData>
+) :
+    ArrayAdapter<UpcomingWeatherData?>(context, R.layout.row_layout,
+        weatherdata as List<UpcomingWeatherData?>
+    ) {
     @SuppressLint("ViewHolder", "InflateParams")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
@@ -29,8 +30,8 @@ class WeatherDataAdaptor(
         val rain = convertView.findViewById<View>(R.id.rain) as TextView
         val imageView = convertView.findViewById<View>(R.id.imageView2) as ImageView
         val temperature = getItem(position)
-        temp2.text = temperature!!.tempOfUpcomingWeather
-        rain.text = temperature.upcomingWeatherSituation
+        temp2.text=temperature!!.tempOfUpcomingWeather.toString()
+        rain.text = temperature!!.upcomingWeatherSituation
         date2.text = temperature.dateInExpectedFormat
         Picasso.get().load(temperature.upcomingWeatherImage).placeholder(R.drawable.hello)
             .into(imageView)

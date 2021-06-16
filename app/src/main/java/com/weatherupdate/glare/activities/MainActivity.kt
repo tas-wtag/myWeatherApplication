@@ -258,21 +258,21 @@ class MainActivity : AppCompatActivity(), LocationListener {
     @SuppressLint("SetTextI18n")
     fun updateUI(wd: MyWeatherData) {
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("hh:mma")
-        val findTimeZoneInt = weatherData.findTimeZone.toInt()
+        val findTimeZoneInt = weatherData.findTimeZone!!.toInt()
         country!!.text = weatherData.country
         city!!.text = city_name
         Picasso.get().load(OnlyConstants.IMG_URL + weatherData.img + ".png").into(imageView)
         latitude!!.text = wd.latitude.toString() + "°  N "
         longitude!!.text = wd.longitude.toString() + "°  E "
         humidity!!.text = wd.humidity.toString() + " %"
-        val findSunriseInt = wd.sunrise.toInt()
+        val findSunriseInt = wd.sunrise!!.toInt()
         val sunriseToShowInt = findSunriseInt + findTimeZoneInt
         val sunriseToShow = Integer.toString(sunriseToShowInt)
         val sunriseLong = sunriseToShow.toLong() * 1000
         val sunriseFind = Date(sunriseLong)
         format.timeZone = TimeZone.getTimeZone("GMT")
         sunrise!!.text = format.format(sunriseFind)
-        val findSunsetInt = wd.sunset.toInt()
+        val findSunsetInt = wd.sunset!!.toInt()
         val sunsetToShowInt = findSunsetInt + findTimeZoneInt
         temp!!.text = wd.temperature + " °C "
         val sunsetToShow = Integer.toString(sunsetToShowInt)

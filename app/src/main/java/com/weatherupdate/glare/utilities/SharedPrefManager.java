@@ -1,12 +1,14 @@
 package com.weatherupdate.glare.utilities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPrefManager {
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
     public SharedPrefManager (Context context){
-        this.context = context;
+        SharedPrefManager.context = context;
     }
 
 

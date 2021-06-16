@@ -19,7 +19,7 @@ import java.util.*
 
 class UpcomingWeatherUpdatesActivity : AppCompatActivity() {
     var listView: ListView? = null
-    var temperature: String? = null
+    lateinit var temp2:String
     var date: String? = null
     var weatherSituation: String? = null
     var weatherImageCode: String? = null
@@ -78,8 +78,9 @@ class UpcomingWeatherUpdatesActivity : AppCompatActivity() {
                     val ja2 = daily.getJSONArray("weather")
                     val m = ja2.getJSONObject(0)
                     weatherSituation = m.getString("main")
+
                     val temperature = daily.getJSONObject("temp")
-                    this@UpcomingWeatherUpdatesActivity.temperature = temperature.getString("day")
+                    temp2 = temperature.getString("day")
                     date = daily.getString("dt").toString()
                     val dateParse = date!!.toLong()*100
                     val dateFormat = Date(dateParse)
@@ -89,10 +90,9 @@ class UpcomingWeatherUpdatesActivity : AppCompatActivity() {
                     weatherImageCode = icon.getString("icon")
                     weatherImage = OnlyConstants.IMG_URL2 + weatherImageCode + ".png"
                     val weatherdata = UpcomingWeatherData(
-                        this@UpcomingWeatherUpdatesActivity.temperature,
-                        weatherSituation,
-                        weatherImage,
-                        dateInExpectedFormat
+                        temp2, weatherSituation!!,
+                        weatherImage!!,
+                        dateInExpectedFormat!!
                     )
                     weatherList!!.add(weatherdata)
                 }
