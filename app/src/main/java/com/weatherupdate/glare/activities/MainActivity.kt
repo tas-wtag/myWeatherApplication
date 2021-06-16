@@ -1,403 +1,382 @@
-package com.weatherupdate.glare.activities;
+package com.weatherupdate.glare.activities
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.Manifest
+import androidx.appcompat.app.AppCompatActivity
+import com.weatherupdate.glare.models.MyWeatherData
+import android.widget.TextView
+import com.weatherupdate.glare.utilities.SharedPrefManager
+import android.location.LocationManager
+import android.view.MenuInflater
+import com.weatherupdate.glare.R
+import android.annotation.SuppressLint
+import android.content.Intent
+import com.weatherupdate.glare.activities.SearchActivity
+import com.weatherupdate.glare.activities.UpcomingWeatherUpdatesActivity
+import android.os.Bundle
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import android.content.DialogInterface
+import android.location.Location
+import android.location.LocationListener
+import com.weatherupdate.glare.utilities.OnlyConstants
+import com.weatherupdate.glare.activities.MainActivity.FetchData
+import com.weatherupdate.glare.activities.MainActivity
+import com.squareup.picasso.Picasso
+import android.os.AsyncTask
+import android.os.Handler
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import org.json.JSONObject
+import org.json.JSONArray
+import org.json.JSONException
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.lang.StringBuilder
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.ProtocolException
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.squareup.picasso.Picasso;
-import com.weatherupdate.glare.utilities.OnlyConstants;
-import com.weatherupdate.glare.R;
-import com.weatherupdate.glare.models.MyWeatherData;
-import com.weatherupdate.glare.utilities.SharedPrefManager;
-
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
-import static java.lang.Long.parseLong;
-
-public class MainActivity extends AppCompatActivity implements LocationListener {
-    String latitudeOfSearchActivity;
-    String longitudeOfSearchactivity;
-    String latitudeOfCurrentLocation;
-    String longitudeOfCurrentLocation;
-    MyWeatherData weatherData = new MyWeatherData ( );
-
-    private String timePause;
-    public long dateInPause;
-    public long dateInResume;
-    public long dateInPause2;
-    public String city_name;
-
-    ImageView imageView;
-    TextView country, city, temp, dateTime;
-    TextView latitude;
-    TextView longitude;
-    TextView pressure;
-    TextView humidity;
-    TextView sunrise;
-    TextView sunset;
-    TextView wind_speed;
-
-    SharedPrefManager sharedPrefManager = new SharedPrefManager (this);
-    SharedPrefManager sharedPrefManager2 = new SharedPrefManager (this);
-    protected LocationManager locationManager;
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater ( );
-
-        inflater.inflate (R.menu.main_activity_bar, menu);
-        return super.onCreateOptionsMenu (menu);
+class MainActivity : AppCompatActivity(), LocationListener {
+    var latitudeOfSearchActivity: String? = null
+    var longitudeOfSearchactivity: String? = null
+    var latitudeOfCurrentLocation: String? = null
+    var longitudeOfCurrentLocation: String? = null
+    var weatherData = MyWeatherData()
+    private var timePause: String? = null
+    var dateInPause: Long = 0
+    var dateInResume: Long = 0
+    var dateInPause2: Long = 0
+    var city_name: String? = null
+    var imageView: ImageView? = null
+    var country: TextView? = null
+    var city: TextView? = null
+    var temp: TextView? = null
+    var dateTime: TextView? = null
+    var latitude: TextView? = null
+    var longitude: TextView? = null
+    var pressure: TextView? = null
+    var humidity: TextView? = null
+    var sunrise: TextView? = null
+    var sunset: TextView? = null
+    var wind_speed: TextView? = null
+    var sharedPrefManager = SharedPrefManager(this)
+    var sharedPrefManager2 = SharedPrefManager(this)
+    protected var locationManager: LocationManager? = null
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_activity_bar, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId ( )) {
-            case R.id.action_search:
-                Intent intent = new Intent (MainActivity.this, SearchActivity.class);
-                startActivity (intent);
-
-                return true;
-
-            case R.id.action_upcoming:
-                Intent intent2 = new Intent (MainActivity.this, UpcomingWeatherUpdatesActivity.class);
-                intent2.putExtra ("Latitude", latitudeOfCurrentLocation);
-                intent2.putExtra ("Longitude", longitudeOfCurrentLocation);
-                startActivity (intent2);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected (item);
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_search -> {
+                val intent = Intent(this@MainActivity, SearchActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_upcoming -> {
+                val intent2 = Intent(this@MainActivity, UpcomingWeatherUpdatesActivity::class.java)
+                intent2.putExtra("Latitude", latitudeOfCurrentLocation)
+                intent2.putExtra("Longitude", longitudeOfCurrentLocation)
+                startActivity(intent2)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate (savedInstanceState);
-        setContentView (R.layout.activity_main);
-        checkLocationPermission ( );
-
-        country = findViewById (R.id.cityName);
-        city = findViewById (R.id.city);
-        temp = findViewById (R.id.temperature);
-        dateTime = findViewById (R.id.dateTime2);
-        imageView = findViewById (R.id.image);
-        latitude = findViewById (R.id.latitude3);
-        longitude = findViewById (R.id.longitude3);
-        humidity = findViewById (R.id.Humidity3);
-        sunrise = findViewById (R.id.Sunrise);
-        sunset = findViewById (R.id.Sunset);
-        pressure = findViewById (R.id.pressure3);
-        wind_speed = findViewById (R.id.windSpeed3);
-        locationManager = (LocationManager) getApplicationContext ( ).getSystemService (LOCATION_SERVICE);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        checkLocationPermission()
+        country = findViewById(R.id.cityName)
+        city = findViewById(R.id.city)
+        temp = findViewById(R.id.temperature)
+        dateTime = findViewById(R.id.dateTime2)
+        imageView = findViewById(R.id.image)
+        latitude = findViewById(R.id.latitude3)
+        longitude = findViewById(R.id.longitude3)
+        humidity = findViewById(R.id.Humidity3)
+        sunrise = findViewById(R.id.Sunrise)
+        sunset = findViewById(R.id.Sunset)
+        pressure = findViewById(R.id.pressure3)
+        wind_speed = findViewById(R.id.windSpeed3)
+        locationManager = applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
     }
 
-    public void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission (this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale (this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder (this)
-                        .setTitle (R.string.title_location_permission)
-                        .setMessage (R.string.text_location_permission)
-                        .setPositiveButton (R.string.ok, (dialogInterface, i) -> {
-                            ActivityCompat.requestPermissions (MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION);
-                        })
-                        .create ( )
-                        .show ( );
+    fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.title_location_permission)
+                    .setMessage(R.string.text_location_permission)
+                    .setPositiveButton(R.string.ok) { dialogInterface: DialogInterface?, i: Int ->
+                        ActivityCompat.requestPermissions(
+                            this@MainActivity, arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                            ),
+                            OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION
+                        )
+                    }
+                    .create()
+                    .show()
             } else {
-                ActivityCompat.requestPermissions (this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(
+                    this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION
+                )
             }
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String @NotNull [] permissions, int @NotNull [] grantResults) {
-        super.onRequestPermissionsResult (requestCode, permissions, grantResults);
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == OnlyConstants.MY_PERMISSIONS_REQUEST_LOCATION) {
-            if ((grantResults.length > 0)
-                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
-                if (ContextCompat.checkSelfPermission (this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
+            if (grantResults.size > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        400,
+                        1f,
+                        this
+                    )
                 }
             }
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        weatherData.setLatitudeCurrentLocation ((location.getLatitude ( )));
-        weatherData.setLongitudeCurrentLocation ((location.getLongitude ( )));
-        FetchData process = new FetchData (dateTime);
-        process.execute ( );
+    override fun onLocationChanged(location: Location) {
+        weatherData.latitudeCurrentLocation = location.latitude
+        weatherData.longitudeCurrentLocation = location.longitude
+        val process = FetchData(dateTime)
+        process.execute()
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume ( );
-        if (sharedPrefManager.getSearchActivity ("MySP") != null) {
-            latitudeOfSearchActivity = sharedPrefManager2.getSearchActivity ("latitude3");
-            longitudeOfSearchactivity = sharedPrefManager2.getSearchActivity ("longitude3");
+    override fun onProviderDisabled(provider: String) {}
+    override fun onProviderEnabled(provider: String) {}
+    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+    override fun onResume() {
+        super.onResume()
+        if (SharedPrefManager.getSearchActivity("MySP") != null) {
+            latitudeOfSearchActivity = SharedPrefManager.getSearchActivity("latitude3")
+            longitudeOfSearchactivity = SharedPrefManager.getSearchActivity("longitude3")
         }
-        if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
         }
-        if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
         }
-        locationManager.requestLocationUpdates (LocationManager.GPS_PROVIDER, 400, 1, this);
+        locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1f, this)
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause ( );
-        Calendar calendar = Calendar.getInstance ( );
-        dateInPause = calendar.getTimeInMillis ( );
-        timePause = Long.toString (dateInPause);
-
-        sharedPrefManager.setPauseTime ("timePause", timePause);
-        if (ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.checkSelfPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION);
+    override fun onPause() {
+        super.onPause()
+        val calendar = Calendar.getInstance()
+        dateInPause = calendar.timeInMillis
+        timePause = java.lang.Long.toString(dateInPause)
+        SharedPrefManager.setPauseTime("timePause", timePause)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         }
-        locationManager.removeUpdates (this);
+        locationManager!!.removeUpdates(this)
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop ( );
+    override fun onStop() {
+        super.onStop()
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart ( );
+    override fun onStart() {
+        super.onStart()
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart ( );
-        Calendar calendar2 = Calendar.getInstance ( );
-        dateInResume = calendar2.getTimeInMillis ( );
-        SharedPrefManager.getPauseTime ("MySharedPref", timePause);
-        if (SharedPrefManager.getPauseTime ("MySharedPref", timePause) != null) {
-            String timePause2 = SharedPrefManager.getPauseTime ("timePause", timePause);
+    override fun onRestart() {
+        super.onRestart()
+        val calendar2 = Calendar.getInstance()
+        dateInResume = calendar2.timeInMillis
+        SharedPrefManager.getPauseTime("MySharedPref", timePause)
+        if (SharedPrefManager.getPauseTime("MySharedPref", timePause) != null) {
+            val timePause2 = SharedPrefManager.getPauseTime("timePause", timePause)
             if (timePause2 != null) {
-                dateInPause2 = parseLong (timePause2);
-                long d = dateInResume - dateInPause2;
+                dateInPause2 = timePause2.toLong()
+                val d = dateInResume - dateInPause2
                 if (d > 300000) {
-                    Intent intent = new Intent (MainActivity.this, MainActivity.class);
-                    finish ( );
-                    startActivity (intent);
+                    val intent = Intent(this@MainActivity, MainActivity::class.java)
+                    finish()
+                    startActivity(intent)
                 }
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
-    public void updateUI(MyWeatherData wd) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat ("hh:mma");
-        int findTimeZoneInt = Integer.parseInt (weatherData.getFindTimeZone ( ));
-
-        country.setText (weatherData.getCountry ( ));
-        city.setText (city_name);
-
-        Picasso.get ( ).load (OnlyConstants.IMG_URL + weatherData.getImg ( ) + ".png").into (imageView);
-
-        latitude.setText (wd.getLatitude ( ) + "°  N ");
-        longitude.setText (wd.getLongitude ( ) + "°  E ");
-        humidity.setText (wd.getHumidity ( ) + " %");
-
-
-        int findSunriseInt = Integer.parseInt (wd.getSunrise ( ));
-        int sunriseToShowInt = findSunriseInt + findTimeZoneInt;
-        String sunriseToShow = Integer.toString (sunriseToShowInt);
-        long sunriseLong = Long.parseLong (sunriseToShow) * 1000;
-        Date sunriseFind = new Date (sunriseLong);
-        format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-        sunrise.setText (format.format (sunriseFind));
-
-
-        int findSunsetInt = Integer.parseInt (wd.getSunset ( ));
-        int sunsetToShowInt = findSunsetInt + findTimeZoneInt;
-        temp.setText (wd.getTemprature ( ) + " °C ");
-        String sunsetToShow = Integer.toString (sunsetToShowInt);
-        long sunsetLong = Long.parseLong (sunsetToShow) * 1000;
-        Date sunsetFind = new Date (sunsetLong);
-        format.setTimeZone (TimeZone.getTimeZone ("GMT"));
-        sunset.setText (format.format (sunsetFind));
-
-        pressure.setText (wd.getPressure ( ) + "  hPa");
-        wind_speed.setText (wd.getWindSpeed ( ) + "  km/h");
+    fun updateUI(wd: MyWeatherData) {
+        @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("hh:mma")
+        val findTimeZoneInt = weatherData.findTimeZone.toInt()
+        country!!.text = weatherData.country
+        city!!.text = city_name
+        Picasso.get().load(OnlyConstants.IMG_URL + weatherData.img + ".png").into(imageView)
+        latitude!!.text = wd.latitude.toString() + "°  N "
+        longitude!!.text = wd.longitude.toString() + "°  E "
+        humidity!!.text = wd.humidity.toString() + " %"
+        val findSunriseInt = wd.sunrise.toInt()
+        val sunriseToShowInt = findSunriseInt + findTimeZoneInt
+        val sunriseToShow = Integer.toString(sunriseToShowInt)
+        val sunriseLong = sunriseToShow.toLong() * 1000
+        val sunriseFind = Date(sunriseLong)
+        format.timeZone = TimeZone.getTimeZone("GMT")
+        sunrise!!.text = format.format(sunriseFind)
+        val findSunsetInt = wd.sunset.toInt()
+        val sunsetToShowInt = findSunsetInt + findTimeZoneInt
+        temp!!.text = wd.temperature + " °C "
+        val sunsetToShow = Integer.toString(sunsetToShowInt)
+        val sunsetLong = sunsetToShow.toLong() * 1000
+        val sunsetFind = Date(sunsetLong)
+        format.timeZone = TimeZone.getTimeZone("GMT")
+        sunset!!.text = format.format(sunsetFind)
+        pressure!!.text = wd.pressure + "  hPa"
+        wind_speed!!.text = wd.windSpeed + "  km/h"
     }
 
-    private class FetchData extends AsyncTask<String, Void, String> {
-        TextView date_time;
+   inner class FetchData(var date_time: TextView?) : AsyncTask<String?, Void?, String>() {
+       override fun doInBackground(vararg params: String?): String {
+           val extras = intent.extras
+           if (extras != null) {
+               latitudeOfCurrentLocation = extras.getString("latitude3")
+               longitudeOfCurrentLocation = extras.getString("longitude3")
+           } else if (latitudeOfSearchActivity != "") {
+               if (longitudeOfSearchactivity != "") {
+                   latitudeOfCurrentLocation = latitudeOfSearchActivity
+                   longitudeOfCurrentLocation = longitudeOfSearchactivity
+               } else {
+                   latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
+                   longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
+               }
+           } else {
+               latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
+               longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
+           }
+           var inputLine: String?
+           val result = StringBuilder()
+           try {
+               val url =
+                   URL("https://api.openweathermap.org/data/2.5/weather?units=metric&lat=$latitudeOfCurrentLocation&lon=$longitudeOfCurrentLocation&appid=1ccb72c16c65d0f4afbfbb0c64313fbf")
+               val httpURLConnection = url.openConnection() as HttpURLConnection
+               httpURLConnection.requestMethod = "GET"
+               httpURLConnection.doOutput = false
+               val inputStream = httpURLConnection.inputStream
+               val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+               while (bufferedReader.readLine().also { inputLine = it } != null) {
+                   result.append(inputLine)
+               }
+           } catch (e: ProtocolException) {
+               e.printStackTrace()
+           } catch (e: MalformedURLException) {
+               e.printStackTrace()
+           } catch (e: IOException) {
+               e.printStackTrace()
+           }
+           return result.toString()
+       }
 
-        public FetchData(TextView textView) {
-            this.date_time = textView;
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            Bundle extras = getIntent ( ).getExtras ( );
-            if (extras != null) {
-                latitudeOfCurrentLocation = (extras.getString ("latitude3"));
-                longitudeOfCurrentLocation = (extras.getString ("longitude3"));
-            } else if (!latitudeOfSearchActivity.equals ("")) {
-                if (!longitudeOfSearchactivity.equals ("")) {
-                    latitudeOfCurrentLocation = (latitudeOfSearchActivity);
-                    longitudeOfCurrentLocation = (longitudeOfSearchactivity);
-                } else {
-                    latitudeOfCurrentLocation = (String.valueOf (weatherData.getLatitudeCurrentLocation ( )));
-                    longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudeCurrentLocation ( )));
-                }
-            } else {
-                latitudeOfCurrentLocation = (String.valueOf (weatherData.getLatitudeCurrentLocation ( )));
-                longitudeOfCurrentLocation = (String.valueOf (weatherData.getLongitudeCurrentLocation ( )));
-            }
-            String inputLine;
-            StringBuilder result = new StringBuilder ( );
-            try {
-                URL url = new URL ("https://api.openweathermap.org/data/2.5/weather?units=metric&lat=" + latitudeOfCurrentLocation + "&lon=" + longitudeOfCurrentLocation + "&appid=1ccb72c16c65d0f4afbfbb0c64313fbf");
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection ( );
-                httpURLConnection.setRequestMethod ("GET");
-                httpURLConnection.setDoOutput (false);
-                InputStream inputStream = httpURLConnection.getInputStream ( );
-                BufferedReader bufferedReader = new BufferedReader (new InputStreamReader (inputStream));
-                while ((inputLine = bufferedReader.readLine ( )) != null) {
-                    result.append (inputLine);
-                }
-            } catch (ProtocolException e) {
-                e.printStackTrace ( );
-            } catch (MalformedURLException e) {
-                e.printStackTrace ( );
-            } catch (IOException e) {
-                e.printStackTrace ( );
-            }
-            return result.toString ( );
-        }
 
         @SuppressLint("SetTextI18n")
-        @Override
-        protected void onPostExecute(String aVoid) {
+        override fun onPostExecute(aVoid: String) {
             try {
-                JSONObject jsonObject = new JSONObject (aVoid);
-                weatherData.setFindTimeZone (jsonObject.getString ("timezone"));
-
-                JSONObject object1 = jsonObject.getJSONObject ("sys");
-                weatherData.setCountry (object1.getString ("country"));
-                city_name = jsonObject.getString ("name");
-
-                JSONObject object2 = jsonObject.getJSONObject ("main");
-                weatherData.setTemprature (object2.getString ("temp"));
-
-                JSONArray jsonArray = jsonObject.getJSONArray ("weather");
-                JSONObject weather = jsonArray.getJSONObject (0);
-                weatherData.setImg (weather.getString ("icon"));
-
-                JSONObject object4 = jsonObject.getJSONObject ("coord");
-                weatherData.setLatitude (object4.getDouble ("lat"));
-
-                JSONObject object5 = jsonObject.getJSONObject ("coord");
-                weatherData.setLongitude (object5.getDouble ("lon"));
-
-                JSONObject object6 = jsonObject.getJSONObject ("main");
-                weatherData.setHumidity (object6.getInt ("humidity"));
-
-                JSONObject object7 = jsonObject.getJSONObject ("sys");
-                weatherData.setSunrise (object7.getString ("sunrise"));
-
-                JSONObject object8 = jsonObject.getJSONObject ("sys");
-                weatherData.setSunset (object8.getString ("sunset"));
-
-                JSONObject object9 = jsonObject.getJSONObject ("main");
-                weatherData.setPressure (object9.getString ("pressure"));
-
-
-                JSONObject object10 = jsonObject.getJSONObject ("wind");
-                weatherData.setWindSpeed (object10.getString ("speed"));
-
-                updateTime (date_time);
-
-                updateUI (weatherData);
-
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace ( );
+                val jsonObject = JSONObject(aVoid)
+                weatherData.findTimeZone = jsonObject.getString("timezone")
+                val object1 = jsonObject.getJSONObject("sys")
+                weatherData.country = object1.getString("country")
+                city_name = jsonObject.getString("name")
+                val object2 = jsonObject.getJSONObject("main")
+                weatherData.temperature = object2.getString("temp")
+                val jsonArray = jsonObject.getJSONArray("weather")
+                val weather = jsonArray.getJSONObject(0)
+                weatherData.img = weather.getString("icon")
+                val object4 = jsonObject.getJSONObject("coord")
+                weatherData.latitude = object4.getDouble("lat")
+                val object5 = jsonObject.getJSONObject("coord")
+                weatherData.longitude = object5.getDouble("lon")
+                val object6 = jsonObject.getJSONObject("main")
+                weatherData.humidity = object6.getInt("humidity")
+                val object7 = jsonObject.getJSONObject("sys")
+                weatherData.sunrise = object7.getString("sunrise")
+                val object8 = jsonObject.getJSONObject("sys")
+                weatherData.sunset = object8.getString("sunset")
+                val object9 = jsonObject.getJSONObject("main")
+                weatherData.pressure = object9.getString("pressure")
+                val object10 = jsonObject.getJSONObject("wind")
+                weatherData.windSpeed = object10.getString("speed")
+                updateTime(date_time)
+                updateUI(weatherData)
+            } catch (jsonException: JSONException) {
+                jsonException.printStackTrace()
             }
         }
 
-        Runnable updater;
-
+        var updater: Runnable? = null
         @SuppressLint("SetTextI18n")
-        void updateTime(TextView dateTime2) {
-            final Handler timerHandler = new Handler ( );
-            updater = () -> {
-                Calendar calender = Calendar.getInstance ( );
-                int day = calender.get (Calendar.DATE);
-                int month = calender.get (Calendar.MONTH) + 1;
-                int year = calender.get (Calendar.YEAR);
-                int hour = calender.get (Calendar.HOUR_OF_DAY);
-                int min = calender.get (Calendar.MINUTE);
-                int sec = calender.get (Calendar.SECOND);
-                dateTime2.setText (day + "-" + month + "-" + year + getString (R.string.newLine) + hour + ":" + min + ":" + sec);
-                timerHandler.postDelayed (updater, 1000);
-            };
-            timerHandler.post (updater);
+        fun updateTime(dateTime2: TextView?) {
+            val timerHandler = Handler()
+            updater = Runnable {
+                val calender = Calendar.getInstance()
+                val day = calender[Calendar.DATE]
+                val month = calender[Calendar.MONTH] + 1
+                val year = calender[Calendar.YEAR]
+                val hour = calender[Calendar.HOUR_OF_DAY]
+                val min = calender[Calendar.MINUTE]
+                val sec = calender[Calendar.SECOND]
+                dateTime2!!.text =
+                    day.toString() + "-" + month + "-" + year + getString(R.string.newLine) + hour + ":" + min + ":" + sec
+                timerHandler.postDelayed(updater!!, 1000)
+            }
+            timerHandler.post(updater!!)
         }
     }
 }
