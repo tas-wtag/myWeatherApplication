@@ -1,53 +1,48 @@
 package com.weatherupdate.glare.activities
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
-import com.weatherupdate.glare.models.MyWeatherData
-import android.widget.TextView
-import com.weatherupdate.glare.utilities.SharedPrefManager
-import android.location.LocationManager
-import android.view.MenuInflater
-import com.weatherupdate.glare.R
 import android.annotation.SuppressLint
-import android.content.Intent
-import com.weatherupdate.glare.activities.SearchActivity
-import com.weatherupdate.glare.activities.UpcomingWeatherUpdatesActivity
-import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
-import com.weatherupdate.glare.utilities.OnlyConstants
-import com.weatherupdate.glare.activities.MainActivity.FetchData
-import com.weatherupdate.glare.activities.MainActivity
-import com.squareup.picasso.Picasso
-import android.os.AsyncTask
+import android.location.LocationManager
+import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import org.json.JSONObject
-import org.json.JSONArray
-import org.json.JSONException
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.lang.StringBuilder
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.ProtocolException
-import java.net.URL
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.squareup.picasso.Picasso
+import com.weatherupdate.glare.R
+import com.weatherupdate.glare.models.WeatherData
+import com.weatherupdate.glare.models.MyWeatherData
+import com.weatherupdate.glare.utilities.OnlyConstants
+import com.weatherupdate.glare.utilities.SharedPrefManager
+import com.weatherupdate.glare.utilities.weatherapi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.*
-
+import java.math.BigDecimal
+import java.math.RoundingMode
+@Suppress("INACCESSIBLE_TYPE", "DEPRECATED_IDENTITY_EQUALS")
 class MainActivity : AppCompatActivity(), LocationListener {
     var latitudeOfSearchActivity: String? = null
     var longitudeOfSearchactivity: String? = null
     var latitudeOfCurrentLocation: String? = null
     var longitudeOfCurrentLocation: String? = null
+    val apiId:String="1ccb72c16c65d0f4afbfbb0c64313fbf"
+    var BaseUrl = "https://api.openweathermap.org/data/2.5/"
     var weatherData = MyWeatherData()
     private var timePause: String? = null
     var dateInPause: Long = 0
@@ -176,8 +171,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
     override fun onLocationChanged(location: Location) {
         weatherData.latitudeCurrentLocation = location.latitude
         weatherData.longitudeCurrentLocation = location.longitude
-        val process = FetchData(dateTime)
-        process.execute()
+        fetchData(dateTime)
+
     }
 
     override fun onProviderDisabled(provider: String) {}
@@ -228,14 +223,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
         locationManager!!.removeUpdates(this)
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onRestart() {
         super.onRestart()
         val calendar2 = Calendar.getInstance()
@@ -258,125 +245,104 @@ class MainActivity : AppCompatActivity(), LocationListener {
     @SuppressLint("SetTextI18n")
     fun updateUI(wd: MyWeatherData) {
         @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("hh:mma")
-        val findTimeZoneInt = weatherData.findTimeZone!!.toInt()
+        val findTimeZoneInt = weatherData.findTimeZone!!
         country!!.text = weatherData.country
         city!!.text = city_name
-        Picasso.get().load(OnlyConstants.IMG_URL + weatherData.img + ".png").into(imageView)
         latitude!!.text = wd.latitude.toString() + "°  N "
         longitude!!.text = wd.longitude.toString() + "°  E "
         humidity!!.text = wd.humidity.toString() + " %"
-        val findSunriseInt = wd.sunrise!!.toInt()
+
+        Picasso.get().load(OnlyConstants.IMG_URL + weatherData.img + ".png").into(imageView)
+
+        format.timeZone = TimeZone.getTimeZone("GMT")
+
+        val findSunriseInt = wd.sunrise!!
         val sunriseToShowInt = findSunriseInt + findTimeZoneInt
         val sunriseToShow = Integer.toString(sunriseToShowInt)
         val sunriseLong = sunriseToShow.toLong() * 1000
         val sunriseFind = Date(sunriseLong)
-        format.timeZone = TimeZone.getTimeZone("GMT")
         sunrise!!.text = format.format(sunriseFind)
-        val findSunsetInt = wd.sunset!!.toInt()
+        val findSunsetInt = wd.sunset!!
         val sunsetToShowInt = findSunsetInt + findTimeZoneInt
-        temp!!.text = wd.temperature + " °C "
         val sunsetToShow = Integer.toString(sunsetToShowInt)
         val sunsetLong = sunsetToShow.toLong() * 1000
         val sunsetFind = Date(sunsetLong)
-        format.timeZone = TimeZone.getTimeZone("GMT")
         sunset!!.text = format.format(sunsetFind)
+
+        val temp2= wd.temperature?.minus(273)
+        temp!!.text = temp2?.let { BigDecimal(it.toDouble()).setScale(2, RoundingMode.HALF_EVEN).toString() } + " °C "
+
         pressure!!.text = wd.pressure + "  hPa"
-        wind_speed!!.text = wd.windSpeed + "  km/h"
+        wind_speed!!.text = wd.windSpeed.toString() + "  km/h"
     }
-
-   inner class FetchData(var date_time: TextView?) : AsyncTask<String?, Void?, String>() {
-       override fun doInBackground(vararg params: String?): String {
-           val extras = intent.extras
-           if (extras != null) {
-               latitudeOfCurrentLocation = extras.getString("latitude3")
-               longitudeOfCurrentLocation = extras.getString("longitude3")
-           } else if (latitudeOfSearchActivity != "") {
-               if (longitudeOfSearchactivity != "") {
-                   latitudeOfCurrentLocation = latitudeOfSearchActivity
-                   longitudeOfCurrentLocation = longitudeOfSearchactivity
-               } else {
-                   latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
-                   longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
-               }
-           } else {
-               latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
-               longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
-           }
-           var inputLine: String?
-           val result = StringBuilder()
-           try {
-               val url =
-                   URL("https://api.openweathermap.org/data/2.5/weather?units=metric&lat=$latitudeOfCurrentLocation&lon=$longitudeOfCurrentLocation&appid=1ccb72c16c65d0f4afbfbb0c64313fbf")
-               val httpURLConnection = url.openConnection() as HttpURLConnection
-               httpURLConnection.requestMethod = "GET"
-               httpURLConnection.doOutput = false
-               val inputStream = httpURLConnection.inputStream
-               val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-               while (bufferedReader.readLine().also { inputLine = it } != null) {
-                   result.append(inputLine)
-               }
-           } catch (e: ProtocolException) {
-               e.printStackTrace()
-           } catch (e: MalformedURLException) {
-               e.printStackTrace()
-           } catch (e: IOException) {
-               e.printStackTrace()
-           }
-           return result.toString()
-       }
-
-
-        @SuppressLint("SetTextI18n")
-        override fun onPostExecute(aVoid: String) {
-            try {
-                val jsonObject = JSONObject(aVoid)
-                weatherData.findTimeZone = jsonObject.getString("timezone")
-                val object1 = jsonObject.getJSONObject("sys")
-                weatherData.country = object1.getString("country")
-                city_name = jsonObject.getString("name")
-                val object2 = jsonObject.getJSONObject("main")
-                weatherData.temperature = object2.getString("temp")
-                val jsonArray = jsonObject.getJSONArray("weather")
-                val weather = jsonArray.getJSONObject(0)
-                weatherData.img = weather.getString("icon")
-                val object4 = jsonObject.getJSONObject("coord")
-                weatherData.latitude = object4.getDouble("lat")
-                val object5 = jsonObject.getJSONObject("coord")
-                weatherData.longitude = object5.getDouble("lon")
-                val object6 = jsonObject.getJSONObject("main")
-                weatherData.humidity = object6.getInt("humidity")
-                val object7 = jsonObject.getJSONObject("sys")
-                weatherData.sunrise = object7.getString("sunrise")
-                val object8 = jsonObject.getJSONObject("sys")
-                weatherData.sunset = object8.getString("sunset")
-                val object9 = jsonObject.getJSONObject("main")
-                weatherData.pressure = object9.getString("pressure")
-                val object10 = jsonObject.getJSONObject("wind")
-                weatherData.windSpeed = object10.getString("speed")
-                updateTime(date_time)
-                updateUI(weatherData)
-            } catch (jsonException: JSONException) {
-                jsonException.printStackTrace()
+    fun fetchData(date_time: TextView?) {
+        val extras = intent.extras
+        if (extras != null) {
+            latitudeOfCurrentLocation = extras.getString("latitude3")
+            longitudeOfCurrentLocation = extras.getString("longitude3")
+        } else if (latitudeOfSearchActivity != "") {
+            if (longitudeOfSearchactivity != "") {
+                latitudeOfCurrentLocation = latitudeOfSearchActivity
+                longitudeOfCurrentLocation = longitudeOfSearchactivity
+            } else {
+                latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
+                longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
             }
+        } else {
+            latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
+            longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
         }
 
-        var updater: Runnable? = null
-        @SuppressLint("SetTextI18n")
-        fun updateTime(dateTime2: TextView?) {
-            val timerHandler = Handler()
-            updater = Runnable {
-                val calender = Calendar.getInstance()
-                val day = calender[Calendar.DATE]
-                val month = calender[Calendar.MONTH] + 1
-                val year = calender[Calendar.YEAR]
-                val hour = calender[Calendar.HOUR_OF_DAY]
-                val min = calender[Calendar.MINUTE]
-                val sec = calender[Calendar.SECOND]
-                dateTime2!!.text =
-                    day.toString() + "-" + month + "-" + year + getString(R.string.newLine) + hour + ":" + min + ":" + sec
-                timerHandler.postDelayed(updater!!, 1000)
-            }
-            timerHandler.post(updater!!)
-        }
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BaseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val myapi: weatherapi = retrofit.create(
+            weatherapi::class.java)
+        val call: Call<WeatherData>? =
+            myapi.getweather(latitudeOfCurrentLocation,longitudeOfCurrentLocation,apiId)
+            call?.enqueue(object : Callback<WeatherData?> {
+                override
+                 fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
+                    if (response.code() === 200) {
+                        val weatherResponse: WeatherData = response.body()!!
+                        weatherData.findTimeZone = weatherResponse.timezone.toInt()
+                        weatherData.country=weatherResponse.sys?.country.toString()
+                        city_name = weatherResponse.name
+                        weatherData.temperature = weatherResponse.main?.temp
+                        weatherData.img = weatherResponse.weather!![0].icon
+                        weatherData.latitude = weatherResponse.coord?.lat!!
+                        weatherData.longitude =  weatherResponse.coord!!.lon
+                        weatherData.humidity = weatherResponse.main?.humidity?.toDouble()!!
+                        weatherData.sunrise = weatherResponse.sys?.sunrise?.toInt()!!
+                        weatherData.sunset = weatherResponse.sys?.sunset?.toInt()
+                        weatherData.pressure = weatherResponse.main?.pressure.toString()
+                        weatherData.windSpeed= weatherResponse.wind?.speed.toString()
+                        updateUI(weatherData)
+                        updateTime(date_time)
+                    }
+                }
+                override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_LONG).show()
+                }
+            })
     }
-}
+          var updater: Runnable? = null
+          @SuppressLint("SetTextI18n")
+          fun updateTime(dateTime2: TextView?) {
+              val timerHandler = Handler()
+              updater = Runnable {
+                  val calender = Calendar.getInstance()
+                  val day = calender[Calendar.DATE]
+                  val month = calender[Calendar.MONTH] + 1
+                  val year = calender[Calendar.YEAR]
+                  val hour = calender[Calendar.HOUR_OF_DAY]
+                  val min = calender[Calendar.MINUTE]
+                  val sec = calender[Calendar.SECOND]
+                  dateTime2!!.text =
+                      day.toString() + "-" + month + "-" + year + getString(R.string.newLine) + hour + ":" + min + ":" + sec
+                  timerHandler.postDelayed(updater!!, 1000)
+              }
+              timerHandler.post(updater!!)
+          }
+      }
