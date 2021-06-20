@@ -11,10 +11,10 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions
 import com.weatherupdate.glare.R
-import com.weatherupdate.glare.activities.SearchActivity
 import com.weatherupdate.glare.models.MyWeatherData
+import com.weatherupdate.glare.models.RealmData
 import com.weatherupdate.glare.utilities.OnlyConstants
-import com.weatherupdate.glare.utilities.SharedPrefManager
+import io.realm.Realm
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -24,6 +24,7 @@ import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.ProtocolException
 import java.net.URL
+
 
 class SearchActivity : AppCompatActivity() {
     var myWeatherData = MyWeatherData()
@@ -38,6 +39,7 @@ class SearchActivity : AppCompatActivity() {
     var pressure: TextView? = null
     var windSpeed: TextView? = null
     var humidity: TextView? = null
+    lateinit var realm: Realm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -51,6 +53,11 @@ class SearchActivity : AppCompatActivity() {
         humidity = findViewById(R.id.Humidity3)
         pressure = findViewById(R.id.pressure3)
         windSpeed = findViewById(R.id.windSpeed3)
+
+        Realm.init(this)
+        realm = Realm.getDefaultInstance()
+
+
         Mapbox.getInstance(this, getString(R.string.MAPBOX_ACCESS_TOKEN))
         val intent: Intent
         intent = PlaceAutocomplete.IntentBuilder()
@@ -77,12 +84,40 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun startMainActivity() {
+        realm.executeTransactionAsync({ bgRealm ->
+            val user = bgRealm.createObject(RealmData::class.java)
+            user.searchedLatitude=myWeatherData.latitudeOfsearchedPlace
+            user.searchedLongitude=myWeatherData.longitudeOfSearchedPlace
+        }, {
+            // Transaction was a success.
+        }) {
+            // Transaction failed and was automatically canceled.
+        }
+        /* val realmName: Realm? = null
+         val config = RealmConfiguration.Builder(). allowQueriesOnUiThread(true)
+             .allowWritesOnUiThread(true).build()
+         val dataModel = RealmData()
+          realmName!!.executeTransaction { realm -> realm.copyToRealm(dataModel) }
+         try {
+
+             dataModel.searchedLatitude = myWeatherData.latitudeOfsearchedPlace
+             dataModel.searchedLongitude = myWeatherData.longitudeOfSearchedPlace
+
+             realmName!!.executeTransaction { realm -> realm.copyToRealm(dataModel) }
+
+             Log.d("Status","Data Inserted !!!")
+
+         }catch (e:Exception){
+             Log.d("Status","Something went Wrong !!!")
+         }
+
+
         val i = Intent(this@SearchActivity, MainActivity::class.java)
-        i.putExtra("latitude3", myWeatherData.latitudeOfsearchedPlace)
-        i.putExtra("longitude3", myWeatherData.longitudeOfSearchedPlace)
-        SharedPrefManager.setSearchActivity("latitude3", myWeatherData.latitudeOfsearchedPlace)
-        SharedPrefManager.setSearchActivity("longitude3", myWeatherData.longitudeOfSearchedPlace)
-        startActivity(i)
+         i.putExtra("latitude3", myWeatherData.latitudeOfsearchedPlace)
+         i.putExtra("longitude3", myWeatherData.longitudeOfSearchedPlace)
+         SharedPrefManager.setSearchActivity("latitude3", myWeatherData.latitudeOfsearchedPlace)
+         SharedPrefManager.setSearchActivity("longitude3", myWeatherData.longitudeOfSearchedPlace)
+         startActivity(i)*/
     }
 
      inner class DataFetch : AsyncTask<String,Void,String>() {
