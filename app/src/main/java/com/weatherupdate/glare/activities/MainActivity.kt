@@ -10,6 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -21,20 +22,25 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
 import com.weatherupdate.glare.R
-import com.weatherupdate.glare.models.WeatherData
 import com.weatherupdate.glare.models.MyWeatherData
+import com.weatherupdate.glare.models.RealmData
+import com.weatherupdate.glare.models.WeatherData
 import com.weatherupdate.glare.utilities.OnlyConstants
 import com.weatherupdate.glare.utilities.SharedPrefManager
 import com.weatherupdate.glare.utilities.weatherapi
+import io.realm.Realm
+import io.realm.RealmResults
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
-import java.util.*
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.SimpleDateFormat
+import java.util.*
+
+
 @Suppress("INACCESSIBLE_TYPE", "DEPRECATED_IDENTITY_EQUALS")
 class MainActivity : AppCompatActivity(), LocationListener {
     var latitudeOfSearchActivity: String? = null
@@ -61,7 +67,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
     var sunrise: TextView? = null
     var sunset: TextView? = null
     var wind_speed: TextView? = null
-    var sharedPrefManager = SharedPrefManager(this)
+    lateinit var realm: Realm
+    val dataModel = RealmData()
     var sharedPrefManager2 = SharedPrefManager(this)
     protected var locationManager: LocationManager? = null
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -106,9 +113,12 @@ class MainActivity : AppCompatActivity(), LocationListener {
         pressure = findViewById(R.id.pressure3)
         wind_speed = findViewById(R.id.windSpeed3)
         locationManager = applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
+        //Realm.init(this)
+        realm = Realm.getDefaultInstance()
+
     }
 
-    fun checkLocationPermission() {
+    private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -180,10 +190,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
     override fun onResume() {
         super.onResume()
-        if (SharedPrefManager.getSearchActivity("MySP") != null) {
-            latitudeOfSearchActivity = SharedPrefManager.getSearchActivity("latitude3")
-            longitudeOfSearchactivity = SharedPrefManager.getSearchActivity("longitude3")
-        }
+        readData()
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -275,19 +282,23 @@ class MainActivity : AppCompatActivity(), LocationListener {
         pressure!!.text = wd.pressure + "  hPa"
         wind_speed!!.text = wd.windSpeed.toString() + "  km/h"
     }
+    @SuppressLint("LogNotTimber")
+    fun readData() {
+        val realmData=RealmData()
+   var  query: RealmResults<RealmData> =
+       realm.where(RealmData::class.java).findAll()
+Log.d("msg", query.toString())
+        for (task in query) {
+            latitudeOfSearchActivity=task.getSearchedLatitude()
+            longitudeOfSearchactivity=task.getSearchedLongitude()
+        }
+    }
     fun fetchData(date_time: TextView?) {
-        val extras = intent.extras
-        if (extras != null) {
-            latitudeOfCurrentLocation = extras.getString("latitude3")
-            longitudeOfCurrentLocation = extras.getString("longitude3")
-        } else if (latitudeOfSearchActivity != "") {
-            if (longitudeOfSearchactivity != "") {
-                latitudeOfCurrentLocation = latitudeOfSearchActivity
-                longitudeOfCurrentLocation = longitudeOfSearchactivity
-            } else {
-                latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
-                longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
-            }
+        readData()
+        if (latitudeOfSearchActivity!=null) {
+            latitudeOfCurrentLocation = latitudeOfSearchActivity
+            longitudeOfCurrentLocation = longitudeOfSearchactivity
+
         } else {
             latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
             longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()

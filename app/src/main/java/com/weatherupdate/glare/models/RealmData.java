@@ -8,6 +8,8 @@ public class RealmData extends RealmObject {
     public RealmData() {
     }
 
+
+
     public String getSearchedLatitude() {
         return searchedLatitude;
     }
