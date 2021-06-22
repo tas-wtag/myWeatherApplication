@@ -5,10 +5,10 @@ import io.realm.RealmObject;
 public class RealmData extends RealmObject {
     String searchedLatitude;
 
+
+
     public RealmData() {
     }
-
-
 
     public String getSearchedLatitude() {
         return searchedLatitude;

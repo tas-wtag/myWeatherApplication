@@ -25,18 +25,21 @@ import com.weatherupdate.glare.R
 import com.weatherupdate.glare.models.MyWeatherData
 import com.weatherupdate.glare.models.RealmData
 import com.weatherupdate.glare.models.WeatherData
+import com.weatherupdate.glare.models.WeatherRealmData
 import com.weatherupdate.glare.utilities.OnlyConstants
 import com.weatherupdate.glare.utilities.SharedPrefManager
 import com.weatherupdate.glare.utilities.weatherapi
 import io.realm.Realm
-import io.realm.RealmResults
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -113,9 +116,51 @@ class MainActivity : AppCompatActivity(), LocationListener {
         pressure = findViewById(R.id.pressure3)
         wind_speed = findViewById(R.id.windSpeed3)
         locationManager = applicationContext.getSystemService(LOCATION_SERVICE) as LocationManager
-        //Realm.init(this)
+        Realm.init(this)
         realm = Realm.getDefaultInstance()
+        val user: WeatherRealmData? = realm.where(WeatherRealmData::class.java).findFirst()
 
+        if (user != null) {
+        showDataFromRealm(dateTime)
+        } else {
+            // Not exist
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDataFromRealm(date_time: TextView?) {
+        var data =
+            realm.where(WeatherRealmData::class.java).findAll()
+        Log.d("msg", data.toString())
+        for (task in data) {
+            val format = SimpleDateFormat("hh:mma")
+            country?.setText(task.getCountry())
+            city?.setText(task.getCity())
+            latitude?.setText(task.getLatitude())
+            longitude?.setText(task.getLongitude())
+            humidity?.setText(task.getHumidity())
+            pressure?.setText(task.getPressure())
+            wind_speed?.setText(task.getWind_speed())
+            val temp2= task.getTemperature()?.toDouble()?.minus(273)
+            temp!!.text = temp2?.let { BigDecimal(it.toDouble()).setScale(2, RoundingMode.HALF_EVEN).toString() } + " °C "
+            var tz:Int=task.getTimezone()
+            format.timeZone = TimeZone.getTimeZone("GMT")
+            val findSunriseInt:Int = task.getSunrise().toInt()
+            val sunriseToShowInt = findSunriseInt + tz
+            val sunriseToShow = sunriseToShowInt.toString()
+            val sunriseLong = sunriseToShow.toLong() * 1000
+            val sunriseFind = Date(sunriseLong)
+            sunrise!!.text = format.format(sunriseFind)
+            val findSunsetInt = task.getSunset().toInt()
+            val sunsetToShowInt:Int = findSunsetInt + tz
+            val sunsetToShow = sunsetToShowInt.toString()
+            val sunsetLong = sunsetToShow.toLong() * 1000
+            val sunsetFind = Date(sunsetLong)
+            sunset!!.text = format.format(sunsetFind)
+            Picasso.get()
+                .load(OnlyConstants.IMG_URL + task.getImg() + ".png").into(imageView)
+            updateTime(date_time)
+        }
     }
 
     private fun checkLocationPermission() {
@@ -182,7 +227,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
         weatherData.latitudeCurrentLocation = location.latitude
         weatherData.longitudeCurrentLocation = location.longitude
         fetchData(dateTime)
-
     }
 
     override fun onProviderDisabled(provider: String) {}
@@ -251,7 +295,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
     @SuppressLint("SetTextI18n")
     fun updateUI(wd: MyWeatherData) {
-        @SuppressLint("SimpleDateFormat") val format = SimpleDateFormat("hh:mma")
+        @SuppressLint("SimpleDateFormat")
+        val format = SimpleDateFormat("hh:mma")
         val findTimeZoneInt = weatherData.findTimeZone!!
         country!!.text = weatherData.country
         city!!.text = city_name
@@ -284,10 +329,9 @@ class MainActivity : AppCompatActivity(), LocationListener {
     }
     @SuppressLint("LogNotTimber")
     fun readData() {
-        val realmData=RealmData()
-   var  query: RealmResults<RealmData> =
+   var query =
        realm.where(RealmData::class.java).findAll()
-Log.d("msg", query.toString())
+        Log.d("msg", query.toString())
         for (task in query) {
             latitudeOfSearchActivity=task.getSearchedLatitude()
             longitudeOfSearchactivity=task.getSearchedLongitude()
@@ -303,7 +347,6 @@ Log.d("msg", query.toString())
             latitudeOfCurrentLocation = weatherData.latitudeCurrentLocation.toString()
             longitudeOfCurrentLocation = weatherData.longitudeCurrentLocation.toString()
         }
-
         val retrofit = Retrofit.Builder()
             .baseUrl(BaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -329,7 +372,8 @@ Log.d("msg", query.toString())
                         weatherData.sunset = weatherResponse.sys?.sunset?.toInt()
                         weatherData.pressure = weatherResponse.main?.pressure.toString()
                         weatherData.windSpeed= weatherResponse.wind?.speed.toString()
-                        updateUI(weatherData)
+
+                        addToRealm();
                         updateTime(date_time)
                     }
                 }
@@ -337,6 +381,38 @@ Log.d("msg", query.toString())
                     Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_LONG).show()
                 }
             })
+    }
+    fun isInternetWorking(): Boolean {
+        var success = false
+        try {
+            val url = URL("https://google.com")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.connectTimeout = 10000
+            connection.connect()
+            success = connection.responseCode == 200
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return success
+    }
+
+    fun addToRealm() {
+        realm.executeTransactionAsync({ bgRealm ->
+            val realmData = bgRealm.createObject(WeatherRealmData::class.java)
+            weatherData.findTimeZone?.let { realmData.setTimezone(it) }
+            realmData.setCountry(weatherData.country)
+            realmData.setHumidity(weatherData.humidity.toString())
+            realmData.setLatitude(weatherData.latitude.toString())
+            realmData.setLongitude(weatherData.longitude.toString())
+            realmData.setPressure(weatherData.pressure)
+            realmData.setWind_speed(weatherData.windSpeed)
+            realmData.setSunrise(weatherData.sunrise.toString())
+            realmData.setSunset(weatherData.sunset.toString())
+            realmData.setImg(weatherData.img)
+            realmData.setTemperature(weatherData.temperature.toString())
+            realmData.setCity(city_name)
+        }, { updateUI(weatherData)
+        }) {}
     }
           var updater: Runnable? = null
           @SuppressLint("SetTextI18n")
