@@ -94,8 +94,8 @@ class SearchActivity : AppCompatActivity() {
             val realmData = bgRealm.createObject(RealmData::class.java)
             lat= myWeatherData.latitudeOfsearchedPlace.toString()
             lon= myWeatherData.longitudeOfSearchedPlace.toString()
-            realmData.setSearchedLatitude(lat)
-            realmData.setSearchedLongitude(lon)
+            realmData.searchedLatitude = lat
+            realmData.searchedLongitude = lon
         }, {
             val i = Intent(this@SearchActivity, MainActivity::class.java)
             startActivity(i)

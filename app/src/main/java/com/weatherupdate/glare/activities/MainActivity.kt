@@ -129,31 +129,31 @@ class MainActivity : AppCompatActivity(), LocationListener{
             realm.where(WeatherRealmData::class.java).findAll()
         for (task in data) {
             val format = SimpleDateFormat("hh:mma")
-            country?.setText(task.getCountry())
-            city?.setText(task.getCity())
-            latitude?.setText(task.getLatitude())
-            longitude?.setText(task.getLongitude())
-            humidity?.setText(task.getHumidity())
-            pressure?.setText(task.getPressure())
-            wind_speed?.setText(task.getWind_speed())
-            val temp2= task.getTemperature()?.toDouble()?.minus(273)
+            country?.setText(task.country)
+            city?.setText(task.city)
+            latitude?.setText(task.latitude)
+            longitude?.setText(task.longitude)
+            humidity?.setText(task.humidity)
+            pressure?.setText(task.pressure)
+            wind_speed?.setText(task.wind_speed)
+            val temp2= task.temperature?.toDouble()?.minus(273)
             temp!!.text = temp2?.let { BigDecimal(it).setScale(2, RoundingMode.HALF_EVEN).toString() } + " °C "
-            val tz:Int=task.getTimezone()
+            val tz:Int=task.timezone
             format.timeZone = TimeZone.getTimeZone("GMT")
-            val findSunriseInt:Int = task.getSunrise().toInt()
+            val findSunriseInt:Int = task.sunrise.toInt()
             val sunriseToShowInt = findSunriseInt + tz
             val sunriseToShow = sunriseToShowInt.toString()
             val sunriseLong = sunriseToShow.toLong() * 1000
             val sunriseFind = Date(sunriseLong)
             sunrise!!.text = format.format(sunriseFind)
-            val findSunsetInt = task.getSunset().toInt()
+            val findSunsetInt = task.sunset.toInt()
             val sunsetToShowInt:Int = findSunsetInt + tz
             val sunsetToShow = sunsetToShowInt.toString()
             val sunsetLong = sunsetToShow.toLong() * 1000
             val sunsetFind = Date(sunsetLong)
             sunset!!.text = format.format(sunsetFind)
             Picasso.get()
-                .load(OnlyConstants.IMG_URL + task.getImg() + ".png").into(imageView)
+                .load(OnlyConstants.IMG_URL + task.img + ".png").into(imageView)
             updateTime(date_time)
         }
     }
@@ -326,8 +326,8 @@ class MainActivity : AppCompatActivity(), LocationListener{
     private fun readData() {
         val query = realm.where(RealmData::class.java).findAll()
         for (task in query) {
-            latitudeOfSearchActivity=task.getSearchedLatitude()
-            longitudeOfSearchactivity=task.getSearchedLongitude()
+            latitudeOfSearchActivity=task.searchedLatitude
+            longitudeOfSearchactivity=task.searchedLongitude
         }
     }
     private fun fetchData(date_time: TextView?) {
@@ -380,18 +380,18 @@ class MainActivity : AppCompatActivity(), LocationListener{
     fun addToRealm() {
         realm.executeTransactionAsync({ bgRealm ->
             val realmData = bgRealm.createObject(WeatherRealmData::class.java)
-            weatherData.findTimeZone?.let { realmData.setTimezone(it) }
-            realmData.setCountry(weatherData.country)
-            realmData.setHumidity(weatherData.humidity.toString())
-            realmData.setLatitude(weatherData.latitude.toString())
-            realmData.setLongitude(weatherData.longitude.toString())
-            realmData.setPressure(weatherData.pressure)
-            realmData.setWind_speed(weatherData.windSpeed)
-            realmData.setSunrise(weatherData.sunrise.toString())
-            realmData.setSunset(weatherData.sunset.toString())
-            realmData.setImg(weatherData.img)
-            realmData.setTemperature(weatherData.temperature.toString())
-            realmData.setCity(city_name)
+            weatherData.findTimeZone?.let { realmData.timezone = it }
+            realmData.country = weatherData.country
+            realmData.humidity = weatherData.humidity.toString()
+            realmData.latitude = weatherData.latitude.toString()
+            realmData.longitude = weatherData.longitude.toString()
+            realmData.pressure = weatherData.pressure
+            realmData.wind_speed = weatherData.windSpeed
+            realmData.sunrise = weatherData.sunrise.toString()
+            realmData.sunset = weatherData.sunset.toString()
+            realmData.img = weatherData.img
+            realmData.temperature = weatherData.temperature.toString()
+            realmData.city = city_name
         }, {
         }) {}
     }

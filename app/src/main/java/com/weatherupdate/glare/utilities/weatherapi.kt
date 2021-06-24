@@ -1,14 +1,15 @@
-package com.weatherupdate.glare.utilities;
+package com.weatherupdate.glare.utilities
 
-import com.weatherupdate.glare.models.WeatherData;
+import com.weatherupdate.glare.models.WeatherData
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-
-public interface weatherapi {
+interface weatherapi {
     @GET("weather")
-    Call <WeatherData> getweather(@Query("lat") String lat,
-                                  @Query("lon") String lon,
-                                  @Query("appid") String app_id);
+    fun getweather(
+        @Query("lat") lat: String?,
+        @Query("lon") lon: String?,
+        @Query("appid") app_id: String?
+    ): Call<WeatherData?>?
 }
